@@ -44,32 +44,21 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private VocabularioDao vocDao;
     @Inject
     private PosteoDao posDao;
-
+    
     @Override
-    public int indexar() {
-        DocumentoBean docB = obtenerDoc("Aca va el documento");
-        if (docB == null) {
-            docB = new DocumentoBean();
-        } else {
-            return 1;
-        }
-        VocabularioBean vocB = obtenerPalabra("aca va la palabra");
-        if (vocB == null) {
-            vocB = new VocabularioBean();
-        }
-        if (vocB.getId() != 0) {
+    public String saveCount(List<File> archivos) {
+        StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
+        //Por casa archivo
+        for (File archivo : archivos) {
+            //Creo HashMap de las palabras del archivo guardando la frecuencia
+            DocumentoBean docB = this.saveCountArch(archivo);
+            TempStore t = this.readFile(archivo);
+            this.saveVocabularioPosteo(docB, t);
+            st.append("-" + archivo.getAbsolutePath() + "\n");
 
         }
-        return 0;
 
-    }
-
-    private DocumentoBean obtenerDoc(String url) {
-        return null;
-    }
-
-    private VocabularioBean obtenerPalabra(String palabra) {
-        return null;
+        return st.toString();
     }
 
     private TempStore readFile(File archivo) {
@@ -110,118 +99,50 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         return t;
     }
 
-    public String saveCount(List<File> archivos) {
-        StringBuilder st = new StringBuilder("Los archivos siguientes archivos han sido coorrectamente procesados: \n");
-        int idArch = 0;
-//        this.a.openConnection();
-
-        for (File archivo : archivos) {
-//            if (!cancel) {
-
-//                this.padre.setResArc(i);
-//                this.padre.setProgreso(0);
-            TempStore t = this.readFile(archivo);
-            DocumentoBean docB = this.saveCountArch(archivo);
-            
-            this.saveVocabularioPosteo(docB, t);
-            st.append("-" + archivo.getAbsolutePath() + "\n");
-//            }
-
-        }
-//        this.a.closeConnection();
-        return st.toString();
-    }
-
     private DocumentoBean saveCountArch(File archivo) {
-        //ARCHIVO
-//        int idAr = 0, idRes = 0;
-        //bar
-
         String urlFile = "";
         urlFile = archivo.getAbsolutePath();
-//        idRes = a.getId(this.tablaArch, this.pkArch, "nombre=('" + nombreFile + "')");
         DocumentoBean docBean = docDao.buscarPorUrl(urlFile);
         if (docBean == null) {
             docBean = new DocumentoBean(archivo.getName(), urlFile);
             DocumentoEntity docE = new Documento(docBean).getEntidad();
             docDao.create(docE);
         }
-        //debo manejar correctamente la excepcion
-//        if(idRes == -1){
-//            
-//        }
-//        if (idRes != -1) {
-//            //Existe
-//            String msg = "Ese archivo " + urlFile + " ya fue cargado";
-//            JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.INFORMATION_MESSAGE, null);
-//
-//        } else {
-//            a.insertPoA(this.tablaArch, urlFile);
-//            idRes = a.getMaxId(this.tablaArch, this.pkArch);
-//            if (idRes != -1) {
-//                idAr = idRes;
-//
-//            } else {
-//                System.out.println("No se insertó el Archivo" + urlFile);
-//                System.exit(0);
-//            }
-//        }
-
-//        this.padre.setArchivo(archivo.getName());
         return docBean;
     }
 
     private int saveVocabularioPosteo(DocumentoBean docB, TempStore t) {
         Iterator<String> it = t.getIterator();
-        
         int repeticiones, cantPalabras = 0;
-        
-        String clave;
-       
+        String termino;
+
         while (it.hasNext()) {
             cantPalabras++;
-            clave = it.next();
-            repeticiones = t.getCount(clave);
-            VocabularioBean vocB = vocDao.buscarPorTermino(clave);
+            termino = it.next();
+            repeticiones = t.getCount(termino);
+            VocabularioBean vocB = vocDao.buscarPorTermino(termino);
             if (vocB == null) {
-                vocB = new VocabularioBean(1, repeticiones, clave);
-                VocabularioEntity docE = new Vocabulario(vocB).getEntidad();
-                vocDao.create(docE);
-            }else{
-                vocB.setCant_doc(vocB.getCant_doc()+1);
-                if(repeticiones>vocB.getMax_tf()){
+                vocB = new VocabularioBean(1, repeticiones, termino);
+                VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
+                vocDao.create(vocE);
+                vocB.setId(vocE.getId());
+            } else {
+                vocB.setCant_doc(vocB.getCant_doc() + 1);
+                if (repeticiones > vocB.getMax_tf()) {
                     vocB.setMax_tf(repeticiones);
                 }
-                VocabularioEntity vocE=new Vocabulario(vocB).getEntidad();
+                VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
                 vocDao.update(vocE);
             }
-            PosteoBean posteoB=new PosteoBean(repeticiones, vocB, docB);
-            PosteoEntity posE=new Posteo(posteoB).getEntidad();
+            PosteoBean posteoB = new PosteoBean(repeticiones, vocB, docB);
+            PosteoEntity posE = new Posteo(posteoB).getEntidad();
             posDao.create(posE);
-            //BUSCAR SI EXISTE
-//  idOld = a.getId(tablaP, this.pkP, "nombre=('" + clave + "')");
-            //SI NO EXISTE INSERTAR, SI EXISTE ACTUALIZAR
-//            if (idOld == -1) {
-//                a.insertPoA(this.tablaP, clave);
-//                idPa++;
-//                idP = idPa;
-//            } else {
-//                idP = idOld;
-//            }
-//            a.insertPxA(idP, idAr, cant);
-//            porcentaje = i * 100 / size;
-//            padre.setProgreso(porcentaje);
+            posteoB.setId(posE.getId());
+
         }
         return cantPalabras;
     }
 
-//    private int tempIdWord() {
-//        int i = a.getMaxId(this.tablaP, this.pkP);
-//        if (i == -1) {
-//            return 0;
-//        }
-//        return i;
-//    }
     public class TempStore {
 
         private HashMap<String, Integer> hm;

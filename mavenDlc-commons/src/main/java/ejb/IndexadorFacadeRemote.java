@@ -5,6 +5,8 @@
  */
 package ejb;
 
+import java.io.File;
+import java.util.List;
 import javax.ejb.Remote;
 
 /**
@@ -14,6 +16,6 @@ import javax.ejb.Remote;
 @Remote
 public interface IndexadorFacadeRemote {
 
-    int indexar();
+   public String saveCount(final List<File> archivos);
     
 }
