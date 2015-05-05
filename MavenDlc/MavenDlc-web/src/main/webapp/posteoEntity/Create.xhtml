@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PosteoEntityCreateDlg" widgetVar="PosteoEntityCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreatePosteoEntityTitle}">
+            <h:form id="PosteoEntityCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{posteoEntityController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreatePosteoEntityLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{posteoEntityController.selected.id}" title="#{bundle.CreatePosteoEntityTitle_id}" required="true" requiredMessage="#{bundle.CreatePosteoEntityRequiredMessage_id}"/>
+                        <p:outputLabel value="#{bundle.CreatePosteoEntityLabel_cantAparicionesTf}" for="cantAparicionesTf" />
+                        <p:inputText id="cantAparicionesTf" value="#{posteoEntityController.selected.cantAparicionesTf}" title="#{bundle.CreatePosteoEntityTitle_cantAparicionesTf}" required="true" requiredMessage="#{bundle.CreatePosteoEntityRequiredMessage_cantAparicionesTf}"/>
+                        <p:outputLabel value="#{bundle.CreatePosteoEntityLabel_documentoId}" for="documentoId" />
+                        <p:selectOneMenu id="documentoId" value="#{posteoEntityController.selected.documentoId}" required="true" requiredMessage="#{bundle.EditPosteoEntityRequiredMessage_documentoId}">
+                            <f:selectItems value="#{documentoEntityController.itemsAvailableSelectOne}"
+                                           var="documentoIdItem"
+                                           itemValue="#{documentoIdItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreatePosteoEntityLabel_vocabularioId}" for="vocabularioId" />
+                        <p:selectOneMenu id="vocabularioId" value="#{posteoEntityController.selected.vocabularioId}" required="true" requiredMessage="#{bundle.EditPosteoEntityRequiredMessage_vocabularioId}">
+                            <f:selectItems value="#{vocabularioEntityController.itemsAvailableSelectOne}"
+                                           var="vocabularioIdItem"
+                                           itemValue="#{vocabularioIdItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{posteoEntityController.create}" value="#{bundle.Save}" update="display,:PosteoEntityListForm:datalist,:growl" oncomplete="handleSubmit(args,'PosteoEntityCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="PosteoEntityCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

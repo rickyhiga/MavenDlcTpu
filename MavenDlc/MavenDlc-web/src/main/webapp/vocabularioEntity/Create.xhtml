@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="VocabularioEntityCreateDlg" widgetVar="VocabularioEntityCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateVocabularioEntityTitle}">
+            <h:form id="VocabularioEntityCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{vocabularioEntityController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateVocabularioEntityLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{vocabularioEntityController.selected.id}" title="#{bundle.CreateVocabularioEntityTitle_id}" required="true" requiredMessage="#{bundle.CreateVocabularioEntityRequiredMessage_id}"/>
+                        <p:outputLabel value="#{bundle.CreateVocabularioEntityLabel_termino}" for="termino" />
+                        <p:inputText id="termino" value="#{vocabularioEntityController.selected.termino}" title="#{bundle.CreateVocabularioEntityTitle_termino}" required="true" requiredMessage="#{bundle.CreateVocabularioEntityRequiredMessage_termino}"/>
+                        <p:outputLabel value="#{bundle.CreateVocabularioEntityLabel_cantDoc}" for="cantDoc" />
+                        <p:inputText id="cantDoc" value="#{vocabularioEntityController.selected.cantDoc}" title="#{bundle.CreateVocabularioEntityTitle_cantDoc}" required="true" requiredMessage="#{bundle.CreateVocabularioEntityRequiredMessage_cantDoc}"/>
+                        <p:outputLabel value="#{bundle.CreateVocabularioEntityLabel_maxTf}" for="maxTf" />
+                        <p:inputText id="maxTf" value="#{vocabularioEntityController.selected.maxTf}" title="#{bundle.CreateVocabularioEntityTitle_maxTf}" required="true" requiredMessage="#{bundle.CreateVocabularioEntityRequiredMessage_maxTf}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{vocabularioEntityController.create}" value="#{bundle.Save}" update="display,:VocabularioEntityListForm:datalist,:growl" oncomplete="handleSubmit(args,'VocabularioEntityCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="VocabularioEntityCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

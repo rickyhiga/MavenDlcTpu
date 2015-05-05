@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PosteoEntityViewDlg" widgetVar="PosteoEntityViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPosteoEntityTitle}">
+            <h:form id="PosteoEntityViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{posteoEntityController.selected != null}">
+                        <h:outputText value="#{bundle.ViewPosteoEntityLabel_id}"/>
+                        <h:outputText value="#{posteoEntityController.selected.id}" title="#{bundle.ViewPosteoEntityTitle_id}"/>
+                        <h:outputText value="#{bundle.ViewPosteoEntityLabel_cantAparicionesTf}"/>
+                        <h:outputText value="#{posteoEntityController.selected.cantAparicionesTf}" title="#{bundle.ViewPosteoEntityTitle_cantAparicionesTf}"/>
+                        <h:outputText value="#{bundle.ViewPosteoEntityLabel_documentoId}"/>
+                        <h:outputText value="#{posteoEntityController.selected.documentoId}" title="#{bundle.ViewPosteoEntityTitle_documentoId}"/>
+                        <h:outputText value="#{bundle.ViewPosteoEntityLabel_vocabularioId}"/>
+                        <h:outputText value="#{posteoEntityController.selected.vocabularioId}" title="#{bundle.ViewPosteoEntityTitle_vocabularioId}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="PosteoEntityViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
