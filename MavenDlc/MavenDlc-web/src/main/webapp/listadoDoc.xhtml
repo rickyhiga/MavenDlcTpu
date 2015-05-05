@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+        
+    </h:head>
+    <h:body>
+        <h3>#{documentosView.msg}</h3>
+   
+    
+                <p:dataTable  rendered="#{!documentosView.docs.isEmpty()}" id="tabla" var="doc" value="#{documentosView.docs}" selectionMode="single"  rowKey="#{doc.id}">
+                <f:facet name="header">
+                    Documentos
+                </f:facet>
+
+
+                <p:column headerText="Id">
+                    <h:outputText value="#{doc.id}" />
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{doc.nombre}" />
+                </p:column>
+
+                <p:column headerText="URL">
+                    <h:outputText value="#{doc.url}" />
+                </p:column>
+
+
+
+            </p:dataTable>
+    
+        <br></br>
+                  <button class="btn btn-primary" value="">Richard Puto</button>
+
+         </h:body>
+    
+    
+    
+</html>
+
