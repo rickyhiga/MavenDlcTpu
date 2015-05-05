@@ -60,6 +60,13 @@ public class DocumentosView implements Serializable{
         this.msg = msg;
     }
     
+    public void newDocumento()
+    {
+        doc.insertarUnoDefault();
+        doc.insertarUno(new DocumentoBean("documento desde la view", "que url", 12.5f));
+    }
+    
+    
     
     
     

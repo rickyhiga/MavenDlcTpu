@@ -9,13 +9,14 @@ package exceptions;
  *
  * @author user
  */
+///PURA FRUTA
+/// EXCEPCION MEXICANA
 public class ExcepcionIndexador {
 
     public String obtenerExcepcion(int i) {
         switch (i) {
             case 1:
                 return "El documento seleccionado ya se encuentra cargado";
-                
             default:
                 return "";
         }

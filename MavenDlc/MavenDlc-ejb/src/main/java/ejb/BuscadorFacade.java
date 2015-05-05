@@ -40,6 +40,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         HashMap<Integer, VocabularioBean> vocabulario = new HashMap<>();//obtengo el map de vocabularioBean
 
         //parseo la consulta
+        //mejorar el delimitador comitas y eso
         Scanner in = new Scanner(consulta).useDelimiter(" ");
         while (in.hasNext()) {
             var = in.next();

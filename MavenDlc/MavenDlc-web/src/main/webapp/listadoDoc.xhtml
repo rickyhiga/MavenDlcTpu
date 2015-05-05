@@ -36,8 +36,16 @@
             </p:dataTable>
     
         <br></br>
-                  <button class="btn btn-primary" value="">Richard Puto</button>
-
+                  <button class="btn btn-primary"      value="">Richard Puto</button>
+          
+                  <h:form>
+    <p:growl id="growl" life="2000" />
+     <p:commandLink id="ajax" update="growl" actionListener="#{documentosView.newDocumento}" >
+        <h:outputText value="Insertar Documento Ficticio" />
+    </p:commandLink>
+                  </h:form>
+                  
+                  
          </h:body>
     
     

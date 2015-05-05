@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 
 /**
  *
- * @author user
+ * @author Nico
  */
 @Stateless
 public class IndexadorFacade implements IndexadorFacadeRemote {
