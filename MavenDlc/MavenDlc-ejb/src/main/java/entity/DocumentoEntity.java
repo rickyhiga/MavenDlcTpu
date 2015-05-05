@@ -108,7 +108,7 @@ public class DocumentoEntity implements Serializable, commons.DalEntity {
 
     @Override
     public String toString() {
-        return "entity.DocumentoEntity[ id=" + id + " ]";
+        return "business.DocumentoEntity[ id=" + id + " ]";
     }
     
 }

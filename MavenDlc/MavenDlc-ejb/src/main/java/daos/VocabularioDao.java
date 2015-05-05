@@ -27,7 +27,7 @@ public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer>{
         VocabularioBean vocB = null;
         Query query = this.entityManager.createNamedQuery("VocabularioEntity.findByTermino").setParameter(":termino", termino);
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
-        if (lista.size()>=0) {
+        if (lista.size()>0) {
             VocabularioEntity docE = lista.get(0);
             vocB=new Vocabulario(docE).getBean();
         }

@@ -26,7 +26,7 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
         DocumentoBean docB = null;
         Query query = this.entityManager.createNamedQuery("DocumentoEntity.findByUrl").setParameter(":url", url);
         List<DocumentoEntity> lista = (List<DocumentoEntity>) query.getResultList();
-        if (lista.size()>=0) {
+        if (lista.size()>0) {
             DocumentoEntity docE = lista.get(0);
             docB=new Documento(docE).getBean();
         }
