@@ -42,50 +42,11 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
         }
         return docB;
     }
-//    public List<DocumentoEntity> findAll() {
-//        List<DocumentoEntity> resp = entityManager.createNamedQuery("DocumentoEntity.findAll").getResultList();        
-//        return resp;
-//    }
-//    public int insertarUno( DocumentoBean docBean){
-//        DocumentoEntity docE=new Documento(docBean).getEntidad();
-//       
-//        try
-//        {
-//            
-////            entityManager.getTransaction().begin();
-//            entityManager.persist(docE);
-//            entityManager.flush();
-////            entityManager.getTransaction().commit();
-//
-//        }catch (EclipseLinkException ex){
-////            entityManager.getTransaction().rollback();
-//            System.out.println(ex.toString());
-//        }
-//
-//        return docE.getId();
-//    }
-//     public int insertarUnoDefault(){
-//        DocumentoBean docBean=new DocumentoBean("Testing", "unaurl");
-//        DocumentoEntity docE=new Documento(docBean).getEntidad();
-////         DocumentoEntity docE=new DocumentoEntity();
-////        docE.setNombre("Default");
-////        docE.setModuloDoc((float)123.456);
-////        docE.setUrl("default.url");
-////        
-//        try
-//        {
-//            
-////            entityManager.getTransaction().begin();
-//            entityManager.persist(docE);
-//            entityManager.flush();
-////            entityManager.getTransaction().commit();
-//
-//        }catch (EclipseLinkException ex){
-////            entityManager.getTransaction().rollback();
-//            System.out.println(ex.toString());
-//        }
-//
-//        return docE.getId();
-//    }
+    
+    public int cantidadDocumentos(){
+        Query query=this.entityManager.createNamedQuery("DocumentoEntity.cantTotal");
+        return (int) query.getSingleResult();
+    }
+
 
 }

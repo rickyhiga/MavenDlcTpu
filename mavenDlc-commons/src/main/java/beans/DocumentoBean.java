@@ -18,6 +18,7 @@ public class DocumentoBean implements Serializable {
     private String nombre;
     private String url;
     //private float moduloDoc;
+    private double puntosRank=0;
 
     public DocumentoBean() {
     }
@@ -58,6 +59,14 @@ public class DocumentoBean implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public double getPuntosRank() {
+        return puntosRank;
+    }
+
+    public void setPuntosRank(double puntosRank) {
+        this.puntosRank = puntosRank;
     }
 
 //    public float getModuloDoc() {

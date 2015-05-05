@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "DocumentoEntity.findAll", query = "SELECT d FROM DocumentoEntity d"),
     @NamedQuery(name = "DocumentoEntity.findById", query = "SELECT d FROM DocumentoEntity d WHERE d.id = :id"),
     @NamedQuery(name = "DocumentoEntity.findByNombre", query = "SELECT d FROM DocumentoEntity d WHERE d.nombre = :nombre"),
-    @NamedQuery(name = "DocumentoEntity.findByUrl", query = "SELECT d FROM DocumentoEntity d WHERE d.url = :url")})
+    @NamedQuery(name = "DocumentoEntity.findByUrl", query = "SELECT d FROM DocumentoEntity d WHERE d.url = :url"),
+    @NamedQuery(name = "DocumentoEntity.cantTotal", query = "SELECT COUNT(d) FROM DocumentoEntity d")})
 public class DocumentoEntity implements Serializable, commons.DalEntity {
     private static final long serialVersionUID = 1L;
     @Id
