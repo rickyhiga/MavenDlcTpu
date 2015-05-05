@@ -5,10 +5,15 @@
  */
 package business;
 
+import beans.DocumentoBean;
 import beans.PosteoBean;
+import beans.VocabularioBean;
+import daos.DocumentoDao;
+import daos.VocabularioDao;
 import entity.DocumentoEntity;
 import entity.PosteoEntity;
 import entity.VocabularioEntity;
+import javax.inject.Inject;
 
 /**
  *
@@ -18,6 +23,10 @@ public class Posteo {
     PosteoEntity entidad;
     DocumentoEntity docE;
     VocabularioEntity vocE;
+    @Inject
+    private VocabularioDao vocDao;
+    @Inject
+    private DocumentoDao docDao;
     public Posteo() {
         entidad=new PosteoEntity();
     }
@@ -32,8 +41,8 @@ public class Posteo {
             this.entidad.setId(posteo.getId());
         }
         entidad.setCantAparicionesTf(posteo.getCant_apariciones_tf());
-        entidad.setDocumentoId(new Documento(posteo.getDocBean()).getEntidad());
-        entidad.setVocabularioId(new Vocabulario(posteo.getVocBean()).getEntidad());
+        entidad.setDocumentoId(posteo.getDocumento_id());
+        entidad.setVocabularioId(posteo.getVocabulario_id());
     }
     
 
@@ -89,7 +98,9 @@ public class Posteo {
     }
     
     public PosteoBean getBean(){
-        PosteoBean resp=new PosteoBean(getId(), new Vocabulario(getVocE()).getBean(), new Documento(getDocE()).getBean(), getCant_apariciones_tf());
+        DocumentoBean docB=docDao.buscarPorId(this.entidad.getDocumentoId());
+        VocabularioBean vocB=vocDao.buscarPorId(this.entidad.getVocabularioId());
+        PosteoBean resp=new PosteoBean(getId(), getCant_apariciones_tf(), vocB, docB);
         return resp;
     }
 }

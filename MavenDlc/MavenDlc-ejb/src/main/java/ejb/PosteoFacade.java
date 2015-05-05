@@ -52,8 +52,8 @@ public class PosteoFacade implements PosteoFacadeRemote {
 
     @Override
     public int insertarUno(PosteoBean posteoBean) {
-        int id=posDao.insertarUno(posteoBean);
-        return id;
+       // int id=posDao.insertarUno(posteoBean);
+        return 0;
     }
 
     

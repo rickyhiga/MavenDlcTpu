@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -31,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PosteoEntity.findAll", query = "SELECT p FROM PosteoEntity p"),
     @NamedQuery(name = "PosteoEntity.findById", query = "SELECT p FROM PosteoEntity p WHERE p.id = :id"),
     @NamedQuery(name = "PosteoEntity.findByCantAparicionesTf", query = "SELECT p FROM PosteoEntity p WHERE p.cantAparicionesTf = :cantAparicionesTf")})
-public class PosteoEntity implements Serializable {
+public class PosteoEntity implements Serializable, commons.DalEntity {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,18 +40,28 @@ public class PosteoEntity implements Serializable {
     @NotNull
     @Column(name = "cant_apariciones_tf")
     private int cantAparicionesTf;
-    @JoinColumn(name = "documento_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private DocumentoEntity documentoId;
-    @JoinColumn(name = "vocabulario_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private VocabularioEntity vocabularioId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "vocabulario_id")
+    private int vocabularioId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "documento_id")
+    private int documentoId;
+
 
     public PosteoEntity() {
     }
 
     public PosteoEntity(Integer id) {
         this.id = id;
+    }
+
+    public PosteoEntity(Integer id, int cantAparicionesTf, int vocabularioId, int documentoId) {
+        this.id = id;
+        this.cantAparicionesTf = cantAparicionesTf;
+        this.vocabularioId = vocabularioId;
+        this.documentoId = documentoId;
     }
 
     public PosteoEntity(Integer id, int cantAparicionesTf) {
@@ -77,21 +85,22 @@ public class PosteoEntity implements Serializable {
         this.cantAparicionesTf = cantAparicionesTf;
     }
 
-    public DocumentoEntity getDocumentoId() {
-        return documentoId;
-    }
-
-    public void setDocumentoId(DocumentoEntity documentoId) {
-        this.documentoId = documentoId;
-    }
-
-    public VocabularioEntity getVocabularioId() {
+    public int getVocabularioId() {
         return vocabularioId;
     }
 
-    public void setVocabularioId(VocabularioEntity vocabularioId) {
+    public void setVocabularioId(int vocabularioId) {
         this.vocabularioId = vocabularioId;
     }
+
+    public int getDocumentoId() {
+        return documentoId;
+    }
+
+    public void setDocumentoId(int documentoId) {
+        this.documentoId = documentoId;
+    }
+    
 
     @Override
     public int hashCode() {
@@ -115,7 +124,9 @@ public class PosteoEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.PosteoEntity[ id=" + id + " ]";
+        return "PosteoEntity{" + "id=" + id + ", cantAparicionesTf=" + cantAparicionesTf + ", vocabularioId=" + vocabularioId + ", documentoId=" + documentoId + '}';
     }
+
+  
     
 }

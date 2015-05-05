@@ -17,22 +17,22 @@ public class DocumentoBean implements Serializable {
     private int id=0;
     private String nombre;
     private String url;
-    private float moduloDoc;
+    //private float moduloDoc;
 
     public DocumentoBean() {
     }
 
-    public DocumentoBean(int id, String nombre, String url, float moduloDoc) {
+    public DocumentoBean(int id, String nombre, String url) {
         this.id = id;
         this.nombre = nombre;
         this.url = url;
-        this.moduloDoc = moduloDoc;
+        //this.moduloDoc = moduloDoc;
     }
 
-    public DocumentoBean(String nombre, String url, float moduloDoc) {
+    public DocumentoBean(String nombre, String url) {
         this.nombre = nombre;
         this.url = url;
-        this.moduloDoc = moduloDoc;
+       // this.moduloDoc = moduloDoc;
     }
     
 
@@ -60,16 +60,16 @@ public class DocumentoBean implements Serializable {
         this.url = url;
     }
 
-    public float getModuloDoc() {
-        return moduloDoc;
-    }
-
-    public void setModuloDoc(float moduloDoc) {
-        this.moduloDoc = moduloDoc;
-    }
+//    public float getModuloDoc() {
+//        return moduloDoc;
+//    }
+//
+//    public void setModuloDoc(float moduloDoc) {
+//        this.moduloDoc = moduloDoc;
+//    }
 
     @Override
     public String toString() {
-        return "DocumentoBean{" + "id=" + id + ", nombre=" + nombre + ", url=" + url + ", moduloDoc=" + moduloDoc + '}';
+        return "DocumentoBean{" + "id=" + id + ", nombre=" + nombre + ", url=" + url ;
     }
 }

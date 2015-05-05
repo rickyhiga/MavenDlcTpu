@@ -10,30 +10,27 @@ package beans;
  * @author user
  */
 public class PosteoBean {
-    int id, documento_id,vocabulario_id, cant_apariciones_tf;
+    int id, cant_apariciones_tf;
     VocabularioBean vocBean;
     DocumentoBean docBean;
-    public PosteoBean(int documento_id, int vocabulario_id, int cant_apariciones_tf) {
-        this.documento_id = documento_id;
-        this.vocabulario_id = vocabulario_id;
-        this.cant_apariciones_tf = cant_apariciones_tf;
-    }
+    
 
-    public PosteoBean(int id, int documento_id, int vocabulario_id, int cant_apariciones_tf) {
-        this.id = id;
-        this.documento_id = documento_id;
-        this.vocabulario_id = vocabulario_id;
-        this.cant_apariciones_tf = cant_apariciones_tf;
-    }
+    
 
-    public PosteoBean(int id, VocabularioBean vocBean, DocumentoBean docBean, int cant_apariciones_tf) {
-        this.id = id;
+    public PosteoBean(int cant_apariciones_tf, VocabularioBean vocBean, DocumentoBean docBean) {
+        this.cant_apariciones_tf = cant_apariciones_tf;
         this.vocBean = vocBean;
-        this.vocabulario_id=vocBean.getId();
         this.docBean = docBean;
-        this.documento_id=docBean.getId();
-        this.cant_apariciones_tf=cant_apariciones_tf;
     }
+
+    public PosteoBean(int id, int cant_apariciones_tf, VocabularioBean vocBean, DocumentoBean docBean) {
+        this.id = id;
+        this.cant_apariciones_tf = cant_apariciones_tf;
+        this.vocBean = vocBean;
+        this.docBean = docBean;
+    }
+
+   
 
     public VocabularioBean getVocBean() {
         return vocBean;
@@ -64,19 +61,19 @@ public class PosteoBean {
     }
 
     public int getDocumento_id() {
-        return documento_id;
+        return docBean.getId();
     }
 
     public void setDocumento_id(int documento_id) {
-        this.documento_id = documento_id;
+        this.docBean.setId(documento_id);
     }
 
     public int getVocabulario_id() {
-        return vocabulario_id;
+        return vocBean.getId();
     }
 
     public void setVocabulario_id(int vocabulario_id) {
-        this.vocabulario_id = vocabulario_id;
+        this.vocBean.setId(vocabulario_id);
     }
 
     public int getCant_apariciones_tf() {
@@ -89,7 +86,7 @@ public class PosteoBean {
 
     @Override
     public String toString() {
-        return "PosteoBean{" + "id=" + id + ", documento_id=" + documento_id + ", vocabulario_id=" + vocabulario_id + ", cant_apariciones_tf=" + cant_apariciones_tf + '}';
+        return "PosteoBean{" + "id=" + id + ", documento_id=" + getDocumento_id() + ", vocabulario_id=" + getVocabulario_id() + ", cant_apariciones_tf=" + cant_apariciones_tf + '}';
     }
     
     

@@ -31,7 +31,7 @@ public class Documento{
         }
         this.entidad.setNombre(documento.getNombre());
         this.entidad.setUrl(documento.getUrl());
-        this.entidad.setModuloDoc(documento.getModuloDoc());
+      //  this.entidad.setModuloDoc(documento.getModuloDoc());
 
     }
 
@@ -55,13 +55,7 @@ public class Documento{
         this.entidad.setUrl(url);
     }
 
-    public float getModuloDoc() {
-        return this.entidad.getModuloDoc();
-    }
-
-    public void setModuloDoc(float moduloDoc) {
-        this.entidad.setModuloDoc(moduloDoc);
-    }
+    
 
 
     public DocumentoBean getBean() {
@@ -69,7 +63,7 @@ public class Documento{
         resp.setId(getId());
         resp.setNombre(getNombre());
         resp.setUrl(getUrl());
-        resp.setModuloDoc(getModuloDoc());
+       // resp.setModuloDoc(getModuloDoc());
         return resp;
     }
 

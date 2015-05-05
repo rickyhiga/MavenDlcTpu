@@ -64,10 +64,10 @@ public class DocumentoFacade implements DocumentoFacadeRemote {
 
     @Override
     public int insertarUno(final DocumentoBean docb) {
-//        DocumentoEntity docE=new Documento(docb).getEntidad();
-//        docDao.create(docE);
+        DocumentoEntity docE=new Documento(docb).getEntidad();
+        docDao.create(docE);
         
-        return docDao.insertarUno(docb);
+        return docE.getId();
        // return docDao.insertarUno(documentoBean);
     }
 
@@ -75,7 +75,7 @@ public class DocumentoFacade implements DocumentoFacadeRemote {
     @Override
     public int insertarUnoDefault() {
         //Testeo clases profe
-        DocumentoBean docBean=new DocumentoBean("Testing", "unaurl", (float) 25.555);
+        DocumentoBean docBean=new DocumentoBean("Testing", "unaurl");
         DocumentoEntity docE=new Documento(docBean).getEntidad();
         docDao.create(docE);
         return docE.getId();
