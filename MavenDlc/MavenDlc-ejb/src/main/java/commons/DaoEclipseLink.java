@@ -62,15 +62,15 @@ public abstract class DaoEclipseLink<E extends DalEntity, K> implements Dao<E, K
     {
         try
         {
-            entityManager.getTransaction().begin();
+         //   entityManager.getTransaction().begin();
             E managed = entityManager.merge(pData);
             entityManager.persist(managed);
             entityManager.flush();
-            entityManager.getTransaction().commit();
+           // entityManager.getTransaction().commit();
         }
         catch (EclipseLinkException ex)
         {
-            entityManager.getTransaction().rollback();
+         //   entityManager.getTransaction().rollback();
             throw new TechnicalException(ex);
         }
     }
@@ -80,14 +80,14 @@ public abstract class DaoEclipseLink<E extends DalEntity, K> implements Dao<E, K
     {
         try
         {
-            entityManager.getTransaction().begin();
+        //    entityManager.getTransaction().begin();
             entityManager.remove(retrieve(pKey));
             entityManager.flush();
-            entityManager.getTransaction().commit();
+         //   entityManager.getTransaction().commit();
         }
         catch (EclipseLinkException ex)
         {
-            entityManager.getTransaction().rollback();
+           // entityManager.getTransaction().rollback();
             throw new TechnicalException(ex);
         }
     }

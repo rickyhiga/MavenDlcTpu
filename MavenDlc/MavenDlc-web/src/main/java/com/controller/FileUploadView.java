@@ -10,6 +10,8 @@ package com.controller;
  *
  * @author Nico
  */
+import beans.DocumentoBean;
+import ejb.BuscadorFacadeRemote;
 import ejb.IndexadorFacadeRemote;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,23 +29,34 @@ import org.primefaces.model.UploadedFile;
  
 @ManagedBean
 public class FileUploadView {
- private String path=".\\archivos_server\\";
+ private String path="D:\\archivos_server\\";
     
  @EJB
  private IndexadorFacadeRemote idx;
+ @EJB
+ private BuscadorFacadeRemote buscadorBean;
  
  public void handleFileUpload(FileUploadEvent event) {
         ArrayList<File> lista = new ArrayList<>();
-        try {
-            File copyFile = copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
-            lista.add(copyFile);
-            FacesMessage message = new FacesMessage("Ok", event.getFile().getFileName() + " subido correctamente.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            File copyFile = copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
+//            lista.add(copyFile);
+//            FacesMessage message = new FacesMessage("Ok", event.getFile().getFileName() + " subido correctamente.");
+//        FacesContext.getCurrentInstance().addMessage(null, message);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+     // idx.leerArchivoDefault();
+     ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("abajo del abanico");
+                 
+     for (DocumentoBean b : busqueda) {
+              FacesMessage message = new FacesMessage("Ok", "NOMBRE: "+ b.getNombre());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+     }
+     
+
+                
         
-        idx.saveCount(lista);
         
     }
     

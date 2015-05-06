@@ -11,6 +11,7 @@ import commons.DaoEclipseLink;
 import entity.DocumentoEntity;
 //import entity.DocumentoEntity;
 import entity.VocabularioEntity;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,4 +44,21 @@ public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer>{
         }
         return vocB;
     }
+      
+    public HashMap<String, VocabularioBean> listarTodosMap()
+    {
+        VocabularioBean vocB = null;
+        HashMap<String, VocabularioBean> mapa = new HashMap<>();
+        Query query = this.entityManager.createNamedQuery("VocabularioEntity.findAll");
+        List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
+      
+        for (VocabularioEntity vocEnt : lista) {
+            vocB = new Vocabulario(vocEnt).getBean();
+            mapa.put(vocB.getTermino(), vocB);
+        }
+        return mapa;
+    }
+      
+      
+      
 }

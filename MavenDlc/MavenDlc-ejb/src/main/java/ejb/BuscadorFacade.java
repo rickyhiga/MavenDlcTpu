@@ -10,6 +10,7 @@ import beans.PosteoBean;
 import beans.VocabularioBean;
 import daos.DocumentoDao;
 import daos.PosteoDao;
+import daos.VocabularioDao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +31,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     @Inject
     PosteoDao posDao;
     DocumentoDao docDao;
+    VocabularioDao vocDao;
     int cantDocs = 0;
 
     @Override
@@ -39,10 +41,12 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         ArrayList<String> busqueda = new ArrayList<>(); //mi búsqueda en terminos parseados
         ArrayList<VocabularioBean> busquedaBeans = new ArrayList<>(); //mi búsqueda en VocuabularioBean
         ArrayList<PosteoBean> posteos = new ArrayList<>(); //mi lista de posteos en general
-        ArrayList<Integer> idDocumentos = new ArrayList<>(); //mi lista de id de documentos ordenados por relevancia
+        List<PosteoBean> auxPosteos = new ArrayList<>(); //mi lista de posteos en general
+//        ArrayList<Integer> idDocumentos = new ArrayList<>(); //mi lista de id de documentos ordenados por relevancia
         ArrayList<DocumentoBean> resultado = new ArrayList<>(); //lista de DocumentosBean ordenados
-        HashMap<String, VocabularioBean> vocabulario = new HashMap<>();//obtengo el map de vocabularioBean
-
+        HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();//obtengo el map de vocabularioBean
+        
+        
         //parseo la consulta
         //mejorar el delimitador comitas y eso
         Scanner in = new Scanner(consulta).useDelimiter(" ");
@@ -71,7 +75,10 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         //busco los posteos
         for (int i = 0; i < busquedaBeans.size(); i++) {
             int id = busquedaBeans.get(i).getId();//obtengo el id para hacer la consulta
-            posteos.addAll(posDao.obtenerPosteosPorId(id));//agrego todos los posteos de la consulta
+            auxPosteos= posDao.obtenerPosteosPorId(id);//agrego todos los posteos de la consulta
+            for(PosteoBean pb : auxPosteos){
+                posteos.add(pb);
+            }
         }
         //obtengo los posteos
 
@@ -81,7 +88,8 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
 //            DocumentoBean db = new DocumentoBean(); //busco el documentoBean con el id=idDoc y lo guardo aca
 //            resultado.add(db);
 //        }
-
+        DocumentoBean db=new DocumentoBean(13,"hola","urlbla");
+        resultado.add(db);
         return resultado;
     }
 

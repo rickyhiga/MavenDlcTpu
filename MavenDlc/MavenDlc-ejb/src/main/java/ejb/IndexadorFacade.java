@@ -69,7 +69,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
     @Override
     public void leerArchivoDefault() {
-        File archivo = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\TestArchivos\\16082-8.txt");
+        File archivo = new File("D:\\archivos_server\\18166-8.txt");
         DocumentoBean docB = this.saveCountArch(archivo);
         System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
         HashMap<String, Integer> hm = this.readFile(archivo);
@@ -80,7 +80,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private HashMap<String, Integer> readFile(File archivo) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-        File f = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\16082-8.txt");
+        File f = new File("D:\\archivos_server\\18166-8.txt");
 
         HashMap<String, Integer> hm = new HashMap<>(1000);
         try {
@@ -145,6 +145,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             DocumentoEntity docE = new Documento(docBean).getEntidad();
 
             docDao.create(docE);
+            docBean.setId(docE.getId());
         }
 
         return docBean;
