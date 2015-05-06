@@ -25,7 +25,7 @@ public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer>{
 //    private EntityManager entityManager;
     public VocabularioBean buscarPorTermino(final String termino) {
         VocabularioBean vocB = null;
-        Query query = this.entityManager.createNamedQuery("VocabularioEntity.findByTermino").setParameter(":termino", termino);
+        Query query = this.entityManager.createNamedQuery("VocabularioEntity.findByTermino").setParameter("termino", termino);
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
         if (lista.size()>0) {
             VocabularioEntity docE = lista.get(0);
@@ -35,7 +35,7 @@ public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer>{
     }
       public VocabularioBean buscarPorId(final int id) {
         VocabularioBean vocB = null;
-        Query query = this.entityManager.createNamedQuery("VocabularioEntity.findById").setParameter(":id", id);
+        Query query = this.entityManager.createNamedQuery("VocabularioEntity.findById").setParameter("id", id);
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
         if (lista.size()>=0) {
             VocabularioEntity docE = lista.get(0);

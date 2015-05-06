@@ -11,6 +11,7 @@ import beans.VocabularioBean;
 import business.Documento;
 import business.Posteo;
 import business.Vocabulario;
+import commons.DetectorEncoding;
 import daos.DocumentoDao;
 import daos.PosteoDao;
 import daos.VocabularioDao;
@@ -18,7 +19,11 @@ import entity.DocumentoEntity;
 import entity.PosteoEntity;
 import entity.VocabularioEntity;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +72,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         File archivo = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\TestArchivos\\16082-8.txt");
         DocumentoBean docB = this.saveCountArch(archivo);
         System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
-         HashMap<String, Integer>  hm = this.readFile(archivo);
+        HashMap<String, Integer> hm = this.readFile(archivo);
         this.saveVocabularioPosteo(docB, hm);
 
     }
@@ -75,16 +80,18 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private HashMap<String, Integer> readFile(File archivo) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-        File f = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\TestArchivos\\16082-8.txt");
-        Scanner sc;
+        File f = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\16082-8.txt");
+
         HashMap<String, Integer> hm = new HashMap<>(1000);
         try {
-
-//            f = archivo;
-            sc = new Scanner(f);
-            System.out.println("Inicia Scanner ***");
+            String charset = DetectorEncoding.getFileEncoding(f);
+            FileInputStream fI = new FileInputStream(f);
+            InputStreamReader iS = new InputStreamReader(fI, charset);
+            Scanner sc = new Scanner(iS);
+        
+            
             while (sc.hasNext()) {
-                System.out.println("Analiza Linea");
+                
                 Matcher matcher = pattern.matcher(sc.nextLine());
                 while (matcher.find()) {
                     String st = matcher.group();
@@ -103,7 +110,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                             hm.put(clave, 1);
                         } else {
                             int old = hm.get(clave);
-            //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
+                            //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
                             //Para JAVA 1.8
                             //hm.replace(clave, old + 1);
                             //Para JAVA 1.7
@@ -115,11 +122,15 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                 }
             }
-            System.out.println("Palabras en archivo " + f.getName() + ": " +hm.size());
+            System.out.println("Palabras en archivo " + f.getName() + ": " + hm.size());
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("No se pudo leer el archivo");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
         return hm;
     }
@@ -139,16 +150,16 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         return docBean;
     }
 
-    private int saveVocabularioPosteo(DocumentoBean docB,  HashMap<String, Integer>  hm) {
-        
+    private int saveVocabularioPosteo(DocumentoBean docB, HashMap<String, Integer> hm) {
+
         int repeticiones, cantPalabras = 0;
         String termino;
-        Iterator it=hm.entrySet().iterator();
+        Iterator it = hm.entrySet().iterator();
         while (it.hasNext()) {
             cantPalabras++;
-            Map.Entry e=(Map.Entry)it.next();
+            Map.Entry e = (Map.Entry) it.next();
             termino = String.valueOf(e.getKey());
-            repeticiones =(int) e.getValue();
+            repeticiones = (int) e.getValue();
             VocabularioBean vocB = vocDao.buscarPorTermino(termino);
             if (vocB == null) {
                 vocB = new VocabularioBean(1, repeticiones, termino);
@@ -169,7 +180,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             posteoB.setId(posE.getId());
 
         }
-        System.out.println("Cantidad de palabras ingresadas: "+ cantPalabras);
+        System.out.println("Cantidad de palabras ingresadas: " + cantPalabras);
         return cantPalabras;
     }
 
