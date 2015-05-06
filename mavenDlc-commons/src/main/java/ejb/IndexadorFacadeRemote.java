@@ -17,5 +17,6 @@ import javax.ejb.Remote;
 public interface IndexadorFacadeRemote {
 
    public String saveCount(final List<File> archivos);
-    
+   
+   public void leerArchivoDefault();
 }

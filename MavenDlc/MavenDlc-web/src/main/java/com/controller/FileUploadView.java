@@ -27,7 +27,7 @@ import org.primefaces.model.UploadedFile;
  
 @ManagedBean
 public class FileUploadView {
- private String path="D:\\archivos_server\\";
+ private String path=".\\archivos_server\\";
     
  @EJB
  private IndexadorFacadeRemote idx;

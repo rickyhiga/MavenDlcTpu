@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +45,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private VocabularioDao vocDao;
     @Inject
     private PosteoDao posDao;
-    
+
     @Override
     public String saveCount(List<File> archivos) {
         StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
@@ -52,7 +53,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             DocumentoBean docB = this.saveCountArch(archivo);
-            TempStore t = this.readFile(archivo);
+            HashMap<String, Integer> t = this.readFile(archivo);
             this.saveVocabularioPosteo(docB, t);
             st.append("-" + archivo.getAbsolutePath() + "\n");
 
@@ -61,17 +62,29 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         return st.toString();
     }
 
-    private TempStore readFile(File archivo) {
+    @Override
+    public void leerArchivoDefault() {
+        File archivo = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\TestArchivos\\16082-8.txt");
+        DocumentoBean docB = this.saveCountArch(archivo);
+        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
+         HashMap<String, Integer>  hm = this.readFile(archivo);
+        this.saveVocabularioPosteo(docB, hm);
+
+    }
+
+    private HashMap<String, Integer> readFile(File archivo) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-        File f;
+        File f = new File("C:\\Users\\user\\Documents\\RickyFacu\\2015\\DLC\\TPU\\MavenDlcTpu\\TestArchivos\\16082-8.txt");
         Scanner sc;
-        TempStore t = new TempStore(1000);
+        HashMap<String, Integer> hm = new HashMap<>(1000);
         try {
 
-            f = archivo;
+//            f = archivo;
             sc = new Scanner(f);
+            System.out.println("Inicia Scanner ***");
             while (sc.hasNext()) {
+                System.out.println("Analiza Linea");
                 Matcher matcher = pattern.matcher(sc.nextLine());
                 while (matcher.find()) {
                     String st = matcher.group();
@@ -85,18 +98,30 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                     }
                     if (!numero) {
-                        t.addCount(st.toLowerCase());
+                        String clave = st.toLowerCase();
+                        if (!hm.containsKey(clave)) {
+                            hm.put(clave, 1);
+                        } else {
+                            int old = hm.get(clave);
+            //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
+                            //Para JAVA 1.8
+                            //hm.replace(clave, old + 1);
+                            //Para JAVA 1.7
+                            hm.remove(clave);
+                            hm.put(clave, old + 1);
+                        }
+
                     }
 
                 }
             }
-            System.out.println("Palabras en archivo " + f.getName() + ": " + t.getCantClaves());
+            System.out.println("Palabras en archivo " + f.getName() + ": " +hm.size());
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("No se pudo leer el archivo");
         }
-        return t;
+        return hm;
     }
 
     private DocumentoBean saveCountArch(File archivo) {
@@ -105,21 +130,25 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         DocumentoBean docBean = docDao.buscarPorUrl(urlFile);
         if (docBean == null) {
             docBean = new DocumentoBean(archivo.getName(), urlFile);
+//            docBean = new DocumentoBean("unarchivo", "unaurl");
             DocumentoEntity docE = new Documento(docBean).getEntidad();
+
             docDao.create(docE);
         }
+
         return docBean;
     }
 
-    private int saveVocabularioPosteo(DocumentoBean docB, TempStore t) {
-        Iterator<String> it = t.getIterator();
+    private int saveVocabularioPosteo(DocumentoBean docB,  HashMap<String, Integer>  hm) {
+        
         int repeticiones, cantPalabras = 0;
         String termino;
-
+        Iterator it=hm.entrySet().iterator();
         while (it.hasNext()) {
             cantPalabras++;
-            termino = it.next();
-            repeticiones = t.getCount(termino);
+            Map.Entry e=(Map.Entry)it.next();
+            termino = String.valueOf(e.getKey());
+            repeticiones =(int) e.getValue();
             VocabularioBean vocB = vocDao.buscarPorTermino(termino);
             if (vocB == null) {
                 vocB = new VocabularioBean(1, repeticiones, termino);
@@ -140,13 +169,13 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             posteoB.setId(posE.getId());
 
         }
+        System.out.println("Cantidad de palabras ingresadas: "+ cantPalabras);
         return cantPalabras;
     }
 
     public class TempStore {
 
         private HashMap<String, Integer> hm;
-        private int cant = 0;
 
         public TempStore() {
             hm = new HashMap();
@@ -163,24 +192,19 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         public void addCount(String clave) {
             if (!hm.containsKey(clave)) {
                 hm.put(clave, 1);
-                cant++;
                 return;
             }
             int old = this.getCount(clave);
             //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
             //Para JAVA 1.8
-            hm.replace(clave, old + 1);
+            //hm.replace(clave, old + 1);
             //Para JAVA 1.7
-            // hm.remove(clave);
-            //hm.put(clave, old+1);
+            hm.remove(clave);
+            hm.put(clave, old + 1);
         }
 
         public int getCount(String clave) {
             return hm.get(clave);
-        }
-
-        public int getCantClaves() {
-            return cant;
         }
 
         public String toString() {

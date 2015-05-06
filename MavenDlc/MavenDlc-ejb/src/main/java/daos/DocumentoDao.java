@@ -24,7 +24,7 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
 
     public DocumentoBean buscarPorUrl(final String url) {
         DocumentoBean docB = null;
-        Query query = this.entityManager.createNamedQuery("DocumentoEntity.findByUrl").setParameter(":url", url);
+        Query query = this.entityManager.createNamedQuery("DocumentoEntity.findByUrl").setParameter("url", url);
         List<DocumentoEntity> lista = (List<DocumentoEntity>) query.getResultList();
         if (lista.size()>0) {
             DocumentoEntity docE = lista.get(0);
@@ -34,7 +34,7 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
     }
     public DocumentoBean buscarPorId(final int id) {
         DocumentoBean docB = null;
-        Query query = this.entityManager.createNamedQuery("DocumentoEntity.findById").setParameter(":id", id);
+        Query query = this.entityManager.createNamedQuery("DocumentoEntity.findById").setParameter("id", id);
         List<DocumentoEntity> lista = (List<DocumentoEntity>) query.getResultList();
         if (lista.size()>=0) {
             DocumentoEntity docE = lista.get(0);

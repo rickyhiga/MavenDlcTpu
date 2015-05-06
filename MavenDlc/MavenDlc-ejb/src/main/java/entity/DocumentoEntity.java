@@ -41,12 +41,12 @@ public class DocumentoEntity implements Serializable, commons.DalEntity {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 150)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 75)
+    @Size(min = 1, max = 150)
     @Column(name = "url")
     private String url;
 
