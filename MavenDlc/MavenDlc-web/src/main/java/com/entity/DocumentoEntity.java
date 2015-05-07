@@ -6,9 +6,7 @@
 package com.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,16 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author user
+ * @author Aldi Vaca
  */
 @Entity
 @Table(name = "documento")
@@ -34,8 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DocumentoEntity.findAll", query = "SELECT d FROM DocumentoEntity d"),
     @NamedQuery(name = "DocumentoEntity.findById", query = "SELECT d FROM DocumentoEntity d WHERE d.id = :id"),
     @NamedQuery(name = "DocumentoEntity.findByNombre", query = "SELECT d FROM DocumentoEntity d WHERE d.nombre = :nombre"),
-    @NamedQuery(name = "DocumentoEntity.findByUrl", query = "SELECT d FROM DocumentoEntity d WHERE d.url = :url"),
-    @NamedQuery(name = "DocumentoEntity.findByModuloDoc", query = "SELECT d FROM DocumentoEntity d WHERE d.moduloDoc = :moduloDoc")})
+    @NamedQuery(name = "DocumentoEntity.findByUrl", query = "SELECT d FROM DocumentoEntity d WHERE d.url = :url")})
 public class DocumentoEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,12 +48,6 @@ public class DocumentoEntity implements Serializable {
     @Size(min = 1, max = 75)
     @Column(name = "url")
     private String url;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "modulo_doc")
-    private float moduloDoc;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "documentoId")
-    private List<PosteoEntity> posteoEntityList;
 
     public DocumentoEntity() {
     }
@@ -67,11 +56,10 @@ public class DocumentoEntity implements Serializable {
         this.id = id;
     }
 
-    public DocumentoEntity(Integer id, String nombre, String url, float moduloDoc) {
+    public DocumentoEntity(Integer id, String nombre, String url) {
         this.id = id;
         this.nombre = nombre;
         this.url = url;
-        this.moduloDoc = moduloDoc;
     }
 
     public Integer getId() {
@@ -98,23 +86,6 @@ public class DocumentoEntity implements Serializable {
         this.url = url;
     }
 
-    public float getModuloDoc() {
-        return moduloDoc;
-    }
-
-    public void setModuloDoc(float moduloDoc) {
-        this.moduloDoc = moduloDoc;
-    }
-
-    @XmlTransient
-    public List<PosteoEntity> getPosteoEntityList() {
-        return posteoEntityList;
-    }
-
-    public void setPosteoEntityList(List<PosteoEntity> posteoEntityList) {
-        this.posteoEntityList = posteoEntityList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -139,5 +110,5 @@ public class DocumentoEntity implements Serializable {
     public String toString() {
         return "com.entity.DocumentoEntity[ id=" + id + " ]";
     }
-    
+
 }

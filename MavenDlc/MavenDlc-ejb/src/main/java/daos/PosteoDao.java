@@ -22,12 +22,13 @@ import org.eclipse.persistence.exceptions.EclipseLinkException;
  * @author user
  */
 public class PosteoDao extends DaoEclipseLink<PosteoEntity, Integer> {
-    public List<PosteoBean> obtenerPosteosPorId(int id){
-        List<PosteoBean> posteos= new ArrayList<>();
-        Query query=this.entityManager.createNamedQuery("PosteoEntity.findById").setParameter("id", id);
-        List<PosteoEntity> posE=query.getResultList();
+
+    public List<PosteoBean> obtenerPosteosPorIdVocabulario(int id) {
+        List<PosteoBean> posteos = new ArrayList<>();
+        Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioId").setParameter("id", id);
+        List<PosteoEntity> posE = query.getResultList();
         for (PosteoEntity posEntity : posE) {
-            PosteoBean posB=new Posteo(posEntity).getBean();
+            PosteoBean posB = new Posteo(posEntity).getBean();
             posteos.add(posB);
         }
         return posteos;

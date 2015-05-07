@@ -28,8 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "PosteoEntity.findAll", query = "SELECT p FROM PosteoEntity p"),
     @NamedQuery(name = "PosteoEntity.findById", query = "SELECT p FROM PosteoEntity p WHERE p.id = :id"),
+    @NamedQuery(name = "PosteoEntity.findByVocabularioId", query = "SELECT p FROM PosteoEntity p WHERE p.vocabularioId = :id"),
     @NamedQuery(name = "PosteoEntity.findByCantAparicionesTf", query = "SELECT p FROM PosteoEntity p WHERE p.cantAparicionesTf = :cantAparicionesTf")})
 public class PosteoEntity implements Serializable, commons.DalEntity {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +50,6 @@ public class PosteoEntity implements Serializable, commons.DalEntity {
     @NotNull
     @Column(name = "documento_id")
     private int documentoId;
-
 
     public PosteoEntity() {
     }
@@ -100,7 +101,6 @@ public class PosteoEntity implements Serializable, commons.DalEntity {
     public void setDocumentoId(int documentoId) {
         this.documentoId = documentoId;
     }
-    
 
     @Override
     public int hashCode() {
@@ -127,6 +127,4 @@ public class PosteoEntity implements Serializable, commons.DalEntity {
         return "PosteoEntity{" + "id=" + id + ", cantAparicionesTf=" + cantAparicionesTf + ", vocabularioId=" + vocabularioId + ", documentoId=" + documentoId + '}';
     }
 
-  
-    
 }

@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PosteoEntity.findById", query = "SELECT p FROM PosteoEntity p WHERE p.id = :id"),
     @NamedQuery(name = "PosteoEntity.findByCantAparicionesTf", query = "SELECT p FROM PosteoEntity p WHERE p.cantAparicionesTf = :cantAparicionesTf")})
 public class PosteoEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,12 +43,12 @@ public class PosteoEntity implements Serializable {
     @NotNull
     @Column(name = "cant_apariciones_tf")
     private int cantAparicionesTf;
-    @JoinColumn(name = "documento_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private DocumentoEntity documentoId;
-    @JoinColumn(name = "vocabulario_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private VocabularioEntity vocabularioId;
+//    @JoinColumn(name = "documento_id", referencedColumnName = "id")
+//    @ManyToOne(optional = false)
+//    private DocumentoEntity documentoId;
+//    @JoinColumn(name = "vocabulario_id", referencedColumnName = "id")
+//    @ManyToOne(optional = false)
+//    private VocabularioEntity vocabularioId;
 
     public PosteoEntity() {
     }
@@ -77,22 +78,21 @@ public class PosteoEntity implements Serializable {
         this.cantAparicionesTf = cantAparicionesTf;
     }
 
-    public DocumentoEntity getDocumentoId() {
-        return documentoId;
-    }
-
-    public void setDocumentoId(DocumentoEntity documentoId) {
-        this.documentoId = documentoId;
-    }
-
-    public VocabularioEntity getVocabularioId() {
-        return vocabularioId;
-    }
-
-    public void setVocabularioId(VocabularioEntity vocabularioId) {
-        this.vocabularioId = vocabularioId;
-    }
-
+//    public DocumentoEntity getDocumentoId() {
+//        return documentoId;
+//    }
+//
+//    public void setDocumentoId(DocumentoEntity documentoId) {
+//        this.documentoId = documentoId;
+//    }
+//
+//    public VocabularioEntity getVocabularioId() {
+//        return vocabularioId;
+//    }
+//
+//    public void setVocabularioId(VocabularioEntity vocabularioId) {
+//        this.vocabularioId = vocabularioId;
+//    }
     @Override
     public int hashCode() {
         int hash = 0;
@@ -117,5 +117,5 @@ public class PosteoEntity implements Serializable {
     public String toString() {
         return "com.entity.PosteoEntity[ id=" + id + " ]";
     }
-    
+
 }

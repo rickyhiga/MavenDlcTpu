@@ -18,8 +18,6 @@
                         <p:inputText id="nombre" value="#{documentoEntityController.selected.nombre}" title="#{bundle.CreateDocumentoEntityTitle_nombre}" required="true" requiredMessage="#{bundle.CreateDocumentoEntityRequiredMessage_nombre}"/>
                         <p:outputLabel value="#{bundle.CreateDocumentoEntityLabel_url}" for="url" />
                         <p:inputText id="url" value="#{documentoEntityController.selected.url}" title="#{bundle.CreateDocumentoEntityTitle_url}" required="true" requiredMessage="#{bundle.CreateDocumentoEntityRequiredMessage_url}"/>
-                        <p:outputLabel value="#{bundle.CreateDocumentoEntityLabel_moduloDoc}" for="moduloDoc" />
-                        <p:inputText id="moduloDoc" value="#{documentoEntityController.selected.moduloDoc}" title="#{bundle.CreateDocumentoEntityTitle_moduloDoc}" required="true" requiredMessage="#{bundle.CreateDocumentoEntityRequiredMessage_moduloDoc}"/>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{documentoEntityController.create}" value="#{bundle.Save}" update="display,:DocumentoEntityListForm:datalist,:growl" oncomplete="handleSubmit(args,'DocumentoEntityCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="DocumentoEntityCreateDialog.hide()"/>

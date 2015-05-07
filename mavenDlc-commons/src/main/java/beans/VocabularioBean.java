@@ -11,10 +11,11 @@ import java.io.Serializable;
  *
  * @author user
  */
-public class VocabularioBean implements Serializable{
+public class VocabularioBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
-    int id, cant_doc=0, max_tf=0;
+    int id, cant_doc = 0, max_tf = 0;
     String termino;
 
     public VocabularioBean(int id, int cant_doc, int max_tf, String termino) {
@@ -37,7 +38,6 @@ public class VocabularioBean implements Serializable{
 
     public VocabularioBean() {
     }
-    
 
     public int getId() {
         return id;
@@ -69,6 +69,10 @@ public class VocabularioBean implements Serializable{
 
     public void setTermino(String termino) {
         this.termino = termino;
+    }
+
+    public void aparecioEnDoc() {
+        this.cant_doc = this.cant_doc + 1;
     }
 
     @Override

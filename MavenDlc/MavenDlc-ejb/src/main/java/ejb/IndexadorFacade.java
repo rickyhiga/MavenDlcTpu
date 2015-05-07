@@ -69,18 +69,28 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
     @Override
     public void leerArchivoDefault() {
-        File archivo = new File("D:\\archivos_server\\18166-8.txt");
+        File archivo = new File("C:\\IDE\\chau.txt");
         DocumentoBean docB = this.saveCountArch(archivo);
         System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
         HashMap<String, Integer> hm = this.readFile(archivo);
         this.saveVocabularioPosteo(docB, hm);
+        archivo = new File("C:\\IDE\\hola.txt");
+        docB = this.saveCountArch(archivo);
+        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
+        hm = this.readFile(archivo);
+        this.saveVocabularioPosteo(docB, hm);
+        archivo = new File("C:\\IDE\\quetal.txt");
+        docB = this.saveCountArch(archivo);
+        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
+        hm = this.readFile(archivo);
+        this.saveVocabularioPosteo(docB, hm);
 
     }
 
-    private HashMap<String, Integer> readFile(File archivo) {
+    private HashMap<String, Integer> readFile(File f) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-        File f = new File("D:\\archivos_server\\18166-8.txt");
+//        File f = new File("D:\\archivos_server\\18166-8.txt");
 
         HashMap<String, Integer> hm = new HashMap<>(1000);
         try {
@@ -88,10 +98,9 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             FileInputStream fI = new FileInputStream(f);
             InputStreamReader iS = new InputStreamReader(fI, charset);
             Scanner sc = new Scanner(iS);
-        
-            
+
             while (sc.hasNext()) {
-                
+
                 Matcher matcher = pattern.matcher(sc.nextLine());
                 while (matcher.find()) {
                     String st = matcher.group();
@@ -105,7 +114,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                     }
                     if (!numero) {
-                        String clave = st.toLowerCase();
+                        String clave = st.toUpperCase();
                         if (!hm.containsKey(clave)) {
                             hm.put(clave, 1);
                         } else {
@@ -122,6 +131,11 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                 }
             }
+//            Iterator it = hm.entrySet().iterator();
+//            while (it.hasNext()) {
+//                Map.Entry e = (Map.Entry) it.next();
+//                System.out.println(e.getKey() + " " + e.getValue());
+//            }
             System.out.println("Palabras en archivo " + f.getName() + ": " + hm.size());
 
         } catch (FileNotFoundException ex) {
@@ -161,19 +175,24 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             Map.Entry e = (Map.Entry) it.next();
             termino = String.valueOf(e.getKey());
             repeticiones = (int) e.getValue();
-            VocabularioBean vocB = vocDao.buscarPorTermino(termino);
+
+            HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();
+            VocabularioBean vocB = vocabulario.get(termino);
+            //VocabularioBean vocB = vocDao.buscarPorTermino(termino);
             if (vocB == null) {
                 vocB = new VocabularioBean(1, repeticiones, termino);
                 VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
                 vocDao.create(vocE);
                 vocB.setId(vocE.getId());
+                vocabulario.put(termino, vocB);
             } else {
-                vocB.setCant_doc(vocB.getCant_doc() + 1);
+                vocB.aparecioEnDoc();
                 if (repeticiones > vocB.getMax_tf()) {
                     vocB.setMax_tf(repeticiones);
                 }
                 VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
                 vocDao.update(vocE);
+                vocabulario.replace(termino, vocB);
             }
             PosteoBean posteoB = new PosteoBean(repeticiones, vocB, docB);
             PosteoEntity posE = new Posteo(posteoB).getEntidad();

@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "VocabularioEntity.findByCantDoc", query = "SELECT v FROM VocabularioEntity v WHERE v.cantDoc = :cantDoc"),
     @NamedQuery(name = "VocabularioEntity.findByMaxTf", query = "SELECT v FROM VocabularioEntity v WHERE v.maxTf = :maxTf")})
 public class VocabularioEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,8 +57,8 @@ public class VocabularioEntity implements Serializable {
     @NotNull
     @Column(name = "max_tf")
     private int maxTf;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vocabularioId")
-    private List<PosteoEntity> posteoEntityList;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vocabularioId")
+//    private List<PosteoEntity> posteoEntityList;
 
     public VocabularioEntity() {
     }
@@ -105,15 +106,15 @@ public class VocabularioEntity implements Serializable {
         this.maxTf = maxTf;
     }
 
-    @XmlTransient
-    public List<PosteoEntity> getPosteoEntityList() {
-        return posteoEntityList;
-    }
-
-    public void setPosteoEntityList(List<PosteoEntity> posteoEntityList) {
-        this.posteoEntityList = posteoEntityList;
-    }
-
+//    @XmlTransient
+//    public List<PosteoEntity> getPosteoEntityList() {
+//        return posteoEntityList;
+//    }
+//
+//    public void setPosteoEntityList(List<PosteoEntity> posteoEntityList) {
+//        this.posteoEntityList = posteoEntityList;
+//    }
+//
     @Override
     public int hashCode() {
         int hash = 0;
@@ -138,5 +139,5 @@ public class VocabularioEntity implements Serializable {
     public String toString() {
         return "com.entity.VocabularioEntity[ id=" + id + " ]";
     }
-    
+
 }

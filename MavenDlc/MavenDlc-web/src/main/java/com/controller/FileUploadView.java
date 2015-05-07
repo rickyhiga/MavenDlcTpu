@@ -5,7 +5,6 @@ package com.controller;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Nico
@@ -23,21 +22,22 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
- 
+
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
- 
+
 @ManagedBean
 public class FileUploadView {
- private String path="D:\\archivos_server\\";
-    
- @EJB
- private IndexadorFacadeRemote idx;
- @EJB
- private BuscadorFacadeRemote buscadorBean;
- 
- public void handleFileUpload(FileUploadEvent event) {
-        ArrayList<File> lista = new ArrayList<>();
+
+    private String path = "C:\\IDE\\";
+
+    @EJB
+    private IndexadorFacadeRemote idx;
+    @EJB
+    private BuscadorFacadeRemote buscadorBean;
+
+    public void handleFileUpload(FileUploadEvent event) {
+//        ArrayList<File> lista = new ArrayList<>();
 //        try {
 //            File copyFile = copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
 //            lista.add(copyFile);
@@ -46,41 +46,33 @@ public class FileUploadView {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-     // idx.leerArchivoDefault();
-     ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("abajo del abanico");
-                 
-     for (DocumentoBean b : busqueda) {
-              FacesMessage message = new FacesMessage("Ok", "NOMBRE: "+ b.getNombre());
+//        idx.leerArchivoDefault();
+        ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("del despeinado vivo siempre");
+        System.out.println("BUSQUEDA");
+        for (DocumentoBean b : busqueda) {
+            System.out.println("NOMBRE: " + b.getNombre());
+            FacesMessage message = new FacesMessage("Ok", "NOMBRE: " + b.getNombre());
             FacesContext.getCurrentInstance().addMessage(null, message);
-     }
-     
+        }
+    }
 
-                
-        
-        
-    }
-    
-    
-    public File copyFile(String fileName, InputStream in) {
-           try {
-                // write the inputStream to a FileOutputStream
-                OutputStream out = new FileOutputStream(new File(path + fileName));
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-                System.out.println("New file created!");
-                } catch (IOException e) {
-                System.out.println(e.getMessage());
-                }
-           
-           return new File(path + fileName);
-    }
-    
-    
-    
+//    public File copyFile(String fileName, InputStream in) {
+//        try {
+//            // write the inputStream to a FileOutputStream
+//            OutputStream out = new FileOutputStream(new File(path + fileName));
+//            int read = 0;
+//            byte[] bytes = new byte[1024];
+//            while ((read = in.read(bytes)) != -1) {
+//                out.write(bytes, 0, read);
+//            }
+//            in.close();
+//            out.flush();
+//            out.close();
+//            System.out.println("New file created!");
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        return new File(path + fileName);
+//    }
 }

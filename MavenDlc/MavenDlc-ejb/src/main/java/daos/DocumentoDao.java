@@ -26,27 +26,32 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
         DocumentoBean docB = null;
         Query query = this.entityManager.createNamedQuery("DocumentoEntity.findByUrl").setParameter("url", url);
         List<DocumentoEntity> lista = (List<DocumentoEntity>) query.getResultList();
-        if (lista.size()>0) {
+        if (lista.size() > 0) {
             DocumentoEntity docE = lista.get(0);
-            docB=new Documento(docE).getBean();
+            docB = new Documento(docE).getBean();
         }
         return docB;
     }
+
     public DocumentoBean buscarPorId(final int id) {
         DocumentoBean docB = null;
         Query query = this.entityManager.createNamedQuery("DocumentoEntity.findById").setParameter("id", id);
         List<DocumentoEntity> lista = (List<DocumentoEntity>) query.getResultList();
-        if (lista.size()>=0) {
+        if (lista.size() > 0) {
             DocumentoEntity docE = lista.get(0);
-            docB=new Documento(docE).getBean();
+            docB = new Documento(docE).getBean();
         }
         return docB;
     }
-    
-    public int cantidadDocumentos(){
-        Query query=this.entityManager.createNamedQuery("DocumentoEntity.cantTotal");
-        return (int) query.getSingleResult();
-    }
 
+    public int cantidadDocumentos() {
+        int result = 0;
+        Query query = this.entityManager.createNamedQuery("DocumentoEntity.findAll");
+        List<DocumentoEntity> list = query.getResultList();
+        for (DocumentoEntity doc : list) {
+            result++;
+        }
+        return result;
+    }
 
 }

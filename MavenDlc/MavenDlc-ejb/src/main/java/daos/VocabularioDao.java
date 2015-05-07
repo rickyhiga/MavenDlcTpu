@@ -21,44 +21,43 @@ import javax.persistence.Query;
  *
  * @author user
  */
-public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer>{
+public class VocabularioDao extends DaoEclipseLink<VocabularioEntity, Integer> {
 //    @PersistenceContext(name = "MavenDlc-ejbPU")
 //    private EntityManager entityManager;
+
     public VocabularioBean buscarPorTermino(final String termino) {
         VocabularioBean vocB = null;
         Query query = this.entityManager.createNamedQuery("VocabularioEntity.findByTermino").setParameter("termino", termino);
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
-        if (lista.size()>0) {
+        if (lista.size() > 0) {
             VocabularioEntity docE = lista.get(0);
-            vocB=new Vocabulario(docE).getBean();
+            vocB = new Vocabulario(docE).getBean();
         }
         return vocB;
     }
-      public VocabularioBean buscarPorId(final int id) {
+
+    public VocabularioBean buscarPorId(final int id) {
         VocabularioBean vocB = null;
         Query query = this.entityManager.createNamedQuery("VocabularioEntity.findById").setParameter("id", id);
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
-        if (lista.size()>=0) {
+        if (lista.size() > 0) {
             VocabularioEntity docE = lista.get(0);
-            vocB=new Vocabulario(docE).getBean();
+            vocB = new Vocabulario(docE).getBean();
         }
         return vocB;
     }
-      
-    public HashMap<String, VocabularioBean> listarTodosMap()
-    {
+
+    public HashMap<String, VocabularioBean> listarTodosMap() {
         VocabularioBean vocB = null;
         HashMap<String, VocabularioBean> mapa = new HashMap<>();
         Query query = this.entityManager.createNamedQuery("VocabularioEntity.findAll");
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
-      
+
         for (VocabularioEntity vocEnt : lista) {
             vocB = new Vocabulario(vocEnt).getBean();
             mapa.put(vocB.getTermino(), vocB);
         }
         return mapa;
     }
-      
-      
-      
+
 }
