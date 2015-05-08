@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -49,6 +50,9 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private VocabularioDao vocDao;
     @Inject
     private PosteoDao posDao;
+
+    @EJB
+    VocabularioVolatilRemote vocRAM;
 
     @Override
     public String saveCount(List<File> archivos) {
@@ -159,7 +163,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         int repeticiones, cantPalabras = 0;
         String termino;
         Iterator it = hm.entrySet().iterator();
-        HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();
+        HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();
         while (it.hasNext()) {
             cantPalabras++;
             Map.Entry e = (Map.Entry) it.next();
@@ -188,6 +192,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             posteoB.setId(posE.getId());
 
         }
+        vocRAM.setVocabulario(vocabulario);
         return cantPalabras;
     }
 

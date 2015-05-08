@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -35,6 +36,8 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     DocumentoDao docDao;
     @Inject
     VocabularioDao vocDao;
+    @EJB
+    VocabularioVolatilRemote vocRAM;
 
     int cantDocs = 0;
 
@@ -47,7 +50,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         ArrayList<PosteoBean> posteos = new ArrayList<>(); //mi lista de posteos en general
         List<PosteoBean> auxPosteos = new ArrayList<>(); //mi lista de posteos en general
         ArrayList<DocumentoBean> resultado = new ArrayList<>(); //lista de DocumentosBean ordenados
-        HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();//obtengo el map de vocabularioBean
+        HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();//obtengo el map de vocabularioBean
 
         //System.out.println("Busq RAM: " + vocabulario);
         //parseo la consulta
