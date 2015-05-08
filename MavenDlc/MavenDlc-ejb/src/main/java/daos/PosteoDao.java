@@ -25,12 +25,12 @@ import org.eclipse.persistence.exceptions.EclipseLinkException;
  * @author user
  */
 public class PosteoDao extends DaoEclipseLink<PosteoEntity, Integer> {
-
+    
     @Inject
     VocabularioDao vocDao;
     @Inject
     DocumentoDao docDao;
-
+    
     public List<PosteoBean> obtenerPosteosPorIdVocabulario(int id) {
         List<PosteoBean> posteos = new ArrayList<>();
         Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioId").setParameter("id", id);
@@ -41,7 +41,23 @@ public class PosteoDao extends DaoEclipseLink<PosteoEntity, Integer> {
             VocabularioBean vocB = vocDao.buscarPorId(posEntity.getVocabularioId());
             posB.setDocBean(docB);
             posB.setVocBean(vocB);
-
+            
+            posteos.add(posB);
+        }
+        return posteos;
+    }
+    
+    public List<PosteoBean> obtenerPosteosPorIdVocabularioOrderByTf(int id) {
+        List<PosteoBean> posteos = new ArrayList<>();
+        Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioIdOrderByTf").setParameter("id", id);
+        List<PosteoEntity> posE = query.setMaxResults(50).getResultList();
+        for (PosteoEntity posEntity : posE) {
+            PosteoBean posB = new Posteo(posEntity).getBean();
+            DocumentoBean docB = docDao.buscarPorId(posEntity.getDocumentoId());
+            VocabularioBean vocB = vocDao.buscarPorId(posEntity.getVocabularioId());
+            posB.setDocBean(docB);
+            posB.setVocBean(vocB);
+            
             posteos.add(posB);
         }
         return posteos;

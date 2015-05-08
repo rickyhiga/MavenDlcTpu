@@ -80,7 +80,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         //busco los posteos
         for (VocabularioBean busquedaBean : busquedaBeans) {
             int id = busquedaBean.getId(); //obtengo el id para hacer la consulta
-            auxPosteos = posDao.obtenerPosteosPorIdVocabulario(id);//agrego todos los posteos de la consulta
+            auxPosteos = posDao.obtenerPosteosPorIdVocabularioOrderByTf(id);//agrego todos los posteos de la consulta
             for (PosteoBean pb : auxPosteos) {
                 posteos.add(pb);
             }

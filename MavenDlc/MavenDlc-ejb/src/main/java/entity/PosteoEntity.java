@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PosteoEntity.findAll", query = "SELECT p FROM PosteoEntity p"),
     @NamedQuery(name = "PosteoEntity.findById", query = "SELECT p FROM PosteoEntity p WHERE p.id = :id"),
     @NamedQuery(name = "PosteoEntity.findByVocabularioId", query = "SELECT p FROM PosteoEntity p WHERE p.vocabularioId = :id"),
+    @NamedQuery(name = "PosteoEntity.findByVocabularioIdOrderByTf", query = "SELECT p FROM PosteoEntity p WHERE p.vocabularioId = :id ORDER BY p.cantAparicionesTf DESC"),
     @NamedQuery(name = "PosteoEntity.findByCantAparicionesTf", query = "SELECT p FROM PosteoEntity p WHERE p.cantAparicionesTf = :cantAparicionesTf")})
 public class PosteoEntity implements Serializable, commons.DalEntity {
 

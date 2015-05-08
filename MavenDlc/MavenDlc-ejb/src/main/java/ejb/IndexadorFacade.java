@@ -117,6 +117,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                         String clave = st.toUpperCase();
                         if (!hm.containsKey(clave)) {
                             hm.put(clave, 1);
+                            System.out.println("Nueva palabra " + clave);
                         } else {
                             int old = hm.get(clave);
                             //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
@@ -125,12 +126,14 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                             //Para JAVA 1.7
                             hm.remove(clave);
                             hm.put(clave, old + 1);
+                            System.out.println("No clave");
                         }
 
                     }
 
                 }
             }
+            System.out.println("FIN DOCUMENTO");
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
@@ -190,6 +193,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             PosteoEntity posE = new Posteo(posteoB).getEntidad();
             posDao.create(posE);
             posteoB.setId(posE.getId());
+            System.out.println("Impacto en base");
 
         }
         vocRAM.setVocabulario(vocabulario);
