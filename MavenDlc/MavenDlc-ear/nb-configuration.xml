@@ -15,5 +15,14 @@ Any value defined here will override the pom.xml file value but is only applicab
 -->
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.7</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>gfv3ee6</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
+        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
+        <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>true</de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile/>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation/>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>true</de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>false</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>false</de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>false</de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>
     </properties>
 </project-shared-configuration>

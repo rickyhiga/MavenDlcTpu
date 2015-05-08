@@ -12,6 +12,7 @@ package com.controller;
 import beans.DocumentoBean;
 import ejb.BuscadorFacadeRemote;
 import ejb.IndexadorFacadeRemote;
+import ejb.VocabularioVolatilRemote;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,10 +31,12 @@ public class FileUploadView {
 
     private String path = "C:\\IDE\\";
 
-    @EJB
-    private IndexadorFacadeRemote idx;
+//    @EJB
+//    private VocabularioVolatilRemote vocRAM;
     @EJB
     private BuscadorFacadeRemote buscadorBean;
+    @EJB
+    private IndexadorFacadeRemote idx;
 
     public void handleFileUpload(FileUploadEvent event) {
         ArrayList<File> lista = new ArrayList<>();
