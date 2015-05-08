@@ -10,12 +10,10 @@ package beans;
  * @author user
  */
 public class PosteoBean {
+
     int id, cant_apariciones_tf;
     VocabularioBean vocBean;
     DocumentoBean docBean;
-    
-
-    
 
     public PosteoBean(int cant_apariciones_tf, VocabularioBean vocBean, DocumentoBean docBean) {
         this.cant_apariciones_tf = cant_apariciones_tf;
@@ -29,8 +27,6 @@ public class PosteoBean {
         this.vocBean = vocBean;
         this.docBean = docBean;
     }
-
-   
 
     public VocabularioBean getVocBean() {
         return vocBean;
@@ -47,7 +43,6 @@ public class PosteoBean {
     public void setDocBean(DocumentoBean docBean) {
         this.docBean = docBean;
     }
-    
 
     public PosteoBean() {
     }
@@ -88,6 +83,5 @@ public class PosteoBean {
     public String toString() {
         return "PosteoBean{" + "id=" + id + ", documento_id=" + getDocumento_id() + ", vocabulario_id=" + getVocabulario_id() + ", cant_apariciones_tf=" + cant_apariciones_tf + '}';
     }
-    
-    
+
 }

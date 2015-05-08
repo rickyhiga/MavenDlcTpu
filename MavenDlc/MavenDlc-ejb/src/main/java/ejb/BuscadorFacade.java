@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,6 +35,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     DocumentoDao docDao;
     @Inject
     VocabularioDao vocDao;
+
     int cantDocs = 0;
 
     @Override
@@ -50,6 +49,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         ArrayList<DocumentoBean> resultado = new ArrayList<>(); //lista de DocumentosBean ordenados
         HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();//obtengo el map de vocabularioBean
 
+        //System.out.println("Busq RAM: " + vocabulario);
         //parseo la consulta
         //mejorar el delimitador comitas y eso
         Scanner in = new Scanner(consulta).useDelimiter(" ");
@@ -75,8 +75,8 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         ordenarTerminos(busquedaBeans);
 
         //busco los posteos
-        for (int i = 0; i < busquedaBeans.size(); i++) {
-            int id = busquedaBeans.get(i).getId();//obtengo el id para hacer la consulta
+        for (VocabularioBean busquedaBean : busquedaBeans) {
+            int id = busquedaBean.getId(); //obtengo el id para hacer la consulta
             auxPosteos = posDao.obtenerPosteosPorIdVocabulario(id);//agrego todos los posteos de la consulta
             for (PosteoBean pb : auxPosteos) {
                 posteos.add(pb);
@@ -84,7 +84,6 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         }
         //obtengo los posteos
 
-        System.out.println("Posteos beans: " + posteos.size());
         resultado = tratamientoPosteos(posteos);
 
         return resultado;
@@ -93,9 +92,9 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     private ArrayList<DocumentoBean> tratamientoPosteos(ArrayList<PosteoBean> posteos) {
         HashMap<Integer, DocumentoBean> documentos = new HashMap<>();
 
-        for (int i = 0; i < posteos.size(); i++) {
-            double rank = posteos.get(i).getCant_apariciones_tf() * Math.log(cantDocs / posteos.get(i).getVocBean().getCant_doc());
-            DocumentoBean doc = posteos.get(i).getDocBean();
+        for (PosteoBean posteo : posteos) {
+            double rank = (double) posteo.getCant_apariciones_tf() * (double) Math.log10((double) cantDocs / (double) posteo.getVocBean().getCant_doc());
+            DocumentoBean doc = posteo.getDocBean();
             doc.setPuntosRank(rank);
             if (documentos.containsKey(doc.getId())) {
                 rank += documentos.get(doc.getId()).getPuntosRank();
@@ -105,7 +104,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
             }
         }
 
-        ArrayList<DocumentoBean> docByRank = new ArrayList<DocumentoBean>(documentos.values());
+        ArrayList<DocumentoBean> docByRank = new ArrayList<>(documentos.values());
         ordenarDocs(docByRank);
 
         return docByRank;

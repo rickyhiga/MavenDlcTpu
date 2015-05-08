@@ -24,7 +24,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 public class FileUploadView {
@@ -37,42 +36,49 @@ public class FileUploadView {
     private BuscadorFacadeRemote buscadorBean;
 
     public void handleFileUpload(FileUploadEvent event) {
-//        ArrayList<File> lista = new ArrayList<>();
+        ArrayList<File> lista = new ArrayList<>();
 //        try {
 //            File copyFile = copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
 //            lista.add(copyFile);
 //            FacesMessage message = new FacesMessage("Ok", event.getFile().getFileName() + " subido correctamente.");
-//        FacesContext.getCurrentInstance().addMessage(null, message);
+//            FacesContext.getCurrentInstance().addMessage(null, message);
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+        File f = new File("C:\\IDE\\chau.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\hola.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\quetal.txt");
+        lista.add(f);
+        idx.saveCount(lista);
 //        idx.leerArchivoDefault();
-        ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("del despeinado vivo siempre");
+        ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("que Una Guardas");
         System.out.println("BUSQUEDA");
         for (DocumentoBean b : busqueda) {
-            System.out.println("NOMBRE: " + b.getNombre());
+            System.out.println("NOMBRE: " + b.getNombre() + " por puntos: " + b.getPuntosRank());
             FacesMessage message = new FacesMessage("Ok", "NOMBRE: " + b.getNombre());
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
 
-//    public File copyFile(String fileName, InputStream in) {
-//        try {
-//            // write the inputStream to a FileOutputStream
-//            OutputStream out = new FileOutputStream(new File(path + fileName));
-//            int read = 0;
-//            byte[] bytes = new byte[1024];
-//            while ((read = in.read(bytes)) != -1) {
-//                out.write(bytes, 0, read);
-//            }
-//            in.close();
-//            out.flush();
-//            out.close();
-//            System.out.println("New file created!");
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//        return new File(path + fileName);
-//    }
+    public File copyFile(String fileName, InputStream in) {
+        try {
+            // write the inputStream to a FileOutputStream
+            OutputStream out = new FileOutputStream(new File(path + fileName));
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+            System.out.println("New file created!");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return new File(path + fileName);
+    }
 }

@@ -99,11 +99,7 @@ public class Posteo {
     }
 
     public PosteoBean getBean() {
-        System.out.println("" + entidad.toString());
-        System.out.println("" + entidad.getDocumentoId());
-        DocumentoBean docB = docDao.buscarPorId(entidad.getDocumentoId());
-        VocabularioBean vocB = vocDao.buscarPorId(entidad.getVocabularioId());
-        PosteoBean resp = new PosteoBean(getId(), getCant_apariciones_tf(), vocB, docB);
+        PosteoBean resp = new PosteoBean(getId(), getCant_apariciones_tf(), null, null);
         return resp;
     }
 }

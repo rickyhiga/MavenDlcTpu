@@ -35,7 +35,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -58,12 +57,12 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             DocumentoBean docB = this.saveCountArch(archivo);
-            HashMap<String, Integer> t = this.readFile(archivo);
-            this.saveVocabularioPosteo(docB, t);
-            st.append("-" + archivo.getAbsolutePath() + "\n");
-
+            if (docB != null) {
+                HashMap<String, Integer> t = this.readFile(archivo);
+                this.saveVocabularioPosteo(docB, t);
+                st.append("-").append(archivo.getAbsolutePath()).append("\n");
+            }
         }
-
         return st.toString();
     }
 
@@ -71,17 +70,16 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     public void leerArchivoDefault() {
         File archivo = new File("C:\\IDE\\chau.txt");
         DocumentoBean docB = this.saveCountArch(archivo);
-        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
         HashMap<String, Integer> hm = this.readFile(archivo);
         this.saveVocabularioPosteo(docB, hm);
+
         archivo = new File("C:\\IDE\\hola.txt");
         docB = this.saveCountArch(archivo);
-        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
         hm = this.readFile(archivo);
         this.saveVocabularioPosteo(docB, hm);
+
         archivo = new File("C:\\IDE\\quetal.txt");
         docB = this.saveCountArch(archivo);
-        System.out.println("*****GUARDADO EL DOCUMENTO: " + docB);
         hm = this.readFile(archivo);
         this.saveVocabularioPosteo(docB, hm);
 
@@ -90,7 +88,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private HashMap<String, Integer> readFile(File f) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-//        File f = new File("D:\\archivos_server\\18166-8.txt");
 
         HashMap<String, Integer> hm = new HashMap<>(1000);
         try {
@@ -106,7 +103,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                     String st = matcher.group();
                     boolean numero = false;
                     for (int i = 0; i < st.length(); i++) {
-                        //System.out.println(st.charAt(i));
                         if (st.charAt(i) == '_' || st.charAt(i) == '0' || st.charAt(i) == '1' || st.charAt(i) == '2' || st.charAt(i) == '3' || st.charAt(i) == '4' || st.charAt(i) == '5' || st.charAt(i) == '6' || st.charAt(i) == '7' || st.charAt(i) == '8' || st.charAt(i) == '9') {
                             numero = true;
                             break;
@@ -131,12 +127,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                 }
             }
-//            Iterator it = hm.entrySet().iterator();
-//            while (it.hasNext()) {
-//                Map.Entry e = (Map.Entry) it.next();
-//                System.out.println(e.getKey() + " " + e.getValue());
-//            }
-            System.out.println("Palabras en archivo " + f.getName() + ": " + hm.size());
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
@@ -155,14 +145,13 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         DocumentoBean docBean = docDao.buscarPorUrl(urlFile);
         if (docBean == null) {
             docBean = new DocumentoBean(archivo.getName(), urlFile);
-//            docBean = new DocumentoBean("unarchivo", "unaurl");
             DocumentoEntity docE = new Documento(docBean).getEntidad();
-
             docDao.create(docE);
             docBean.setId(docE.getId());
+            return docBean;
+        } else {
+            return null;
         }
-
-        return docBean;
     }
 
     private int saveVocabularioPosteo(DocumentoBean docB, HashMap<String, Integer> hm) {
@@ -170,15 +159,14 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         int repeticiones, cantPalabras = 0;
         String termino;
         Iterator it = hm.entrySet().iterator();
+        HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();
         while (it.hasNext()) {
             cantPalabras++;
             Map.Entry e = (Map.Entry) it.next();
             termino = String.valueOf(e.getKey());
             repeticiones = (int) e.getValue();
 
-            HashMap<String, VocabularioBean> vocabulario = vocDao.listarTodosMap();
             VocabularioBean vocB = vocabulario.get(termino);
-            //VocabularioBean vocB = vocDao.buscarPorTermino(termino);
             if (vocB == null) {
                 vocB = new VocabularioBean(1, repeticiones, termino);
                 VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
@@ -200,7 +188,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             posteoB.setId(posE.getId());
 
         }
-        System.out.println("Cantidad de palabras ingresadas: " + cantPalabras);
         return cantPalabras;
     }
 
