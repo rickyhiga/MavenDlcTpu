@@ -20,6 +20,3 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
-# El archivo de configuracion de conexion #
-/MavenDlc/MavenDlc-ear/src/main/setup/glassfish-resources.xml

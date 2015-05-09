@@ -20,22 +20,20 @@ import javax.inject.Named;
 @ManagedBean
 @Named
 public class CtrBusqueda {
-    
+
     @EJB
     private BuscadorFacadeRemote buscadorBean;
-    
+
     private String txtBusqueda;
+    private ArrayList<DocumentoBean> lista;
 
     public CtrBusqueda() {
     }
-    
-    
-    public String buscar()
-    {
-         ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("abajo");
-         //RespuestaDocumentos rD = new RespuestaDocumentos(busqueda);
-         return "listResultados";
-         
+
+    public String buscar() {
+        lista = buscadorBean.busqueda(this.txtBusqueda);
+        return "resultados";
+
     }
 
     public String getTxtBusqueda() {
@@ -45,7 +43,13 @@ public class CtrBusqueda {
     public void setTxtBusqueda(String txtBusqueda) {
         this.txtBusqueda = txtBusqueda;
     }
-    
-    
-    
+
+    public ArrayList<DocumentoBean> getLista() {
+        return lista;
+    }
+
+    public void setLista(ArrayList<DocumentoBean> lista) {
+        this.lista = lista;
+    }
+
 }
