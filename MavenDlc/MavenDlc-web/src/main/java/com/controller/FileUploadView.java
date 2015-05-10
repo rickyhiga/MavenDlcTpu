@@ -51,9 +51,17 @@ public class FileUploadView {
 
         File dir = new File("C:\\IDE");
         File[] directoryListing = dir.listFiles();
+        int count=0;
         if (directoryListing != null) {
             for (File child : directoryListing) {
+//                count++;
+//                if(count>1){
+//                    break;
+//                }
                 lista.add(child);
+                
+                
+                        
             }
         } else {
     // Handle the case where dir is not really a directory.
