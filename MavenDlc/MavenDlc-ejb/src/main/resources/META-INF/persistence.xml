@@ -5,6 +5,9 @@
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="URL" value="jdbc:mysql://localhost/buscadordlc"></property>
+
     </properties>
+    
   </persistence-unit>
 </persistence>

@@ -12,15 +12,11 @@
                            <h:form>
                             <div class="col-sm-8">                                
                                 <div class="fg-line">
-                                    
-                                    <input type="text" value="#{ctrBusqueda.txtBusqueda}" name="txtBusqueda" id="txtBusqueda" class="form-control input-lg" placeholder="Ingreso texto a Buscar"></input>
-                                
+                                <h:inputText value="#{ctrBusqueda.txtBusqueda}" class="form-control input-lg"  />
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                
-                                <h:commandButton style="padding-top: 8px" value="Buscar" class="btn btn-primary btn-lg waves-effect waves-button waves-float" action="#{ctrBusqueda.buscar}" />
-                            
+                                <h:commandButton style="padding-top: 8px" value="Buscar"  styleClass="btn btn-primary btn-lg waves-effect waves-button waves-float" action="#{ctrBusqueda.buscar}" />
                             </div>
                             </h:form>
                         </div>
