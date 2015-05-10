@@ -48,12 +48,24 @@ public class FileUploadView {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        File f = new File("C:\\IDE\\prueba.txt");
+        File f = new File("C:\\IDE\\prueba2.txt");
         lista.add(f);
-//        f = new File("C:\\IDE\\hola.txt");
-//        lista.add(f);
-//        f = new File("C:\\IDE\\quetal.txt");
-//        lista.add(f);
+        f = new File("C:\\IDE\\prueba3.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba4.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba5.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba6.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba7.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba8.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba9.txt");
+        lista.add(f);
+        f = new File("C:\\IDE\\prueba10.txt");
+        lista.add(f);
         idx.saveCount(lista);
 //        idx.leerArchivoDefault();
         ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("que Una Guardas");
