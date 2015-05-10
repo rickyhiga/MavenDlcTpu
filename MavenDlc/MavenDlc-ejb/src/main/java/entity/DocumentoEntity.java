@@ -62,6 +62,10 @@ public class DocumentoEntity implements Serializable, commons.DalEntity {
         this.nombre = nombre;
         this.url = url;
     }
+    public DocumentoEntity(String nombre, String url) {
+        this.nombre = nombre;
+        this.url = url;
+    }
 
     public Integer getId() {
         return id;

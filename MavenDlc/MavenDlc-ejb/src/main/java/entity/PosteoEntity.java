@@ -65,6 +65,13 @@ public class PosteoEntity implements Serializable, commons.DalEntity {
         this.vocabularioId = vocabularioId;
         this.documentoId = documentoId;
     }
+    public PosteoEntity( int cantAparicionesTf, int vocabularioId, int documentoId) {
+        
+        this.cantAparicionesTf = cantAparicionesTf;
+        this.vocabularioId = vocabularioId;
+        this.documentoId = documentoId;
+    }
+
 
     public PosteoEntity(Integer id, int cantAparicionesTf) {
         this.id = id;

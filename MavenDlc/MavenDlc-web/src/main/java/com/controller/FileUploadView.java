@@ -48,8 +48,21 @@ public class FileUploadView {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        File f = new File("C:\\IDE\\prueba.txt");
-        lista.add(f);
+        File dir = new File("C:\\IDE");
+        File[] directoryListing = dir.listFiles();
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+                lista.add(child);
+            }
+        } else {
+    // Handle the case where dir is not really a directory.
+            // Checking dir.isDirectory() above would not be sufficient
+            // to avoid race conditions with another process that deletes
+            // directories.
+            System.out.println("NO EXISTE LA CARPETA");
+        }
+//        File f = new File("C:\\IDE\\prueba.txt");
+//        lista.add(f);
 //        f = new File("C:\\IDE\\hola.txt");
 //        lista.add(f);
 //        f = new File("C:\\IDE\\quetal.txt");

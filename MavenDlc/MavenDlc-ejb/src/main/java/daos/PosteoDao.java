@@ -26,13 +26,16 @@ import org.eclipse.persistence.exceptions.EclipseLinkException;
  * @author user
  */
 public class PosteoDao extends DBAccessMySql {
+
     @PersistenceContext(unitName = "MavenDlc-ejbPU")
     protected EntityManager entityManager;
     @Inject
     VocabularioDao vocDao;
     @Inject
     DocumentoDao docDao;
-    
+    private String tabla = "posteo";
+    private String[] columnas = {"vocabulario_id", "documento_id", "cant_apariciones_tf"};
+
     public List<PosteoBean> obtenerPosteosPorIdVocabulario(int id) {
         List<PosteoBean> posteos = new ArrayList<>();
         Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioId").setParameter("id", id);
@@ -43,12 +46,12 @@ public class PosteoDao extends DBAccessMySql {
             VocabularioBean vocB = vocDao.buscarPorId(posEntity.getVocabularioId());
             posB.setDocBean(docB);
             posB.setVocBean(vocB);
-            
+
             posteos.add(posB);
         }
         return posteos;
     }
-    
+
     public List<PosteoBean> obtenerPosteosPorIdVocabularioOrderByTf(int id) {
         List<PosteoBean> posteos = new ArrayList<>();
         Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioIdOrderByTf").setParameter("id", id);
@@ -59,28 +62,19 @@ public class PosteoDao extends DBAccessMySql {
             VocabularioBean vocB = vocDao.buscarPorId(posEntity.getVocabularioId());
             posB.setDocBean(docB);
             posB.setVocBean(vocB);
-            
+
             posteos.add(posB);
         }
         return posteos;
     }
-     public PosteoEntity create(PosteoEntity posE) {
-        String[] columnas = {"vocabulario_id", "documento_id", "cant_apariciones_tf"};
-        String[] values = {""+posE.getVocabularioId(), ""+posE.getDocumentoId(), ""+posE.getCantAparicionesTf()};
 
-        int id=this.insertarSinAbrirCerrarConexion("posteo", columnas, values);
+    public PosteoEntity create(PosteoEntity posE) {
+        String[] values = {"" + posE.getVocabularioId(), "" + posE.getDocumentoId(), "" + posE.getCantAparicionesTf()};
+
+        int id = this.insertarSinAbrirCerrarConexion(tabla, columnas, values);
         posE.setId(id);
         return posE;
-//         StringBuilder st = new StringBuilder("");
-//        st.append("INSERT INTO posteo(vocabulario_id, documento_id, cant_apariciones_tf) VALUES(");
-//        st.append(posE.getVocabularioId());
-//        st.append(", ");
-//        st.append(posE.getDocumentoId());
-//        st.append(", ");
-//        st.append(posE.getCantAparicionesTf());
-//        st.append(");");
-//        super.setQuery(st.toString());
-//        super.executeSingleQuery();
+
     }
 
 }

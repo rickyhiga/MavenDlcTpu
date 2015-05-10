@@ -137,6 +137,25 @@ public abstract class DBAccessMySql extends AbstractDB {
         super.executeSingleQuery();
         super.closeConnection();
     }
+    public void actualizarSinAbrirCerrarConexion(String tabla, String[] columnas, String[] values, String clause) {
+        StringBuilder st = new StringBuilder("");
+        st.append(" UPDATE ");
+        st.append(tabla);
+        st.append(" SET ");
+        for (int i = 0; i < columnas.length; i++) {
+            st.append(columnas[i]);
+            st.append(" = ");
+            st.append(values[i]);
+            if (i != values.length - 1) {
+                st.append(", ");
+            }
+        }
+
+        st.append(" WHERE ");
+        st.append(clause);
+        super.setQuery(st.toString());
+        super.executeSingleQuery();
+    }
 
     @Override
     public ResultSet seleccionSimple(String tabla, String[] columnas, String clause) {
@@ -193,6 +212,34 @@ public abstract class DBAccessMySql extends AbstractDB {
         super.setQuery(st.toString());
         //System.out.println("El statement usado es: "+ st.toString());
         super.openConnection();
+        rS = super.getResultsFromQuery();
+        //super.closeConnection();
+        return rS;
+    }
+      public ResultSet seleccionSimpleLimitOneSinAbrirCerrarConexion(String tabla, String[] columnas, String clause) {
+        ResultSet rS = null;
+
+        StringBuilder st = new StringBuilder("");
+        st.append("SELECT ");
+
+        for (int i = 0; i < columnas.length; i++) {
+            st.append(columnas[i]);
+            if (i != columnas.length - 1) {
+                st.append(", ");
+            }
+        }
+
+        st.append(" FROM ");
+        st.append(tabla);
+
+        if (!"".equals(clause)) {
+            st.append(" WHERE ");
+            st.append(clause);
+        }
+        st.append(" LIMIT 1");
+        super.setQuery(st.toString());
+        //System.out.println("El statement usado es: "+ st.toString());
+        
         rS = super.getResultsFromQuery();
         //super.closeConnection();
         return rS;

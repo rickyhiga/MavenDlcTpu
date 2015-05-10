@@ -41,7 +41,7 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 30)
+    @Size(min = 1, max = 100)
     @Column(name = "termino")
     private String termino;
     @Basic(optional = false)
@@ -62,6 +62,11 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
 
     public VocabularioEntity(Integer id, String termino, int cantDoc, int maxTf) {
         this.id = id;
+        this.termino = termino;
+        this.cantDoc = cantDoc;
+        this.maxTf = maxTf;
+    }
+    public VocabularioEntity(String termino, int cantDoc, int maxTf) {
         this.termino = termino;
         this.cantDoc = cantDoc;
         this.maxTf = maxTf;

@@ -40,6 +40,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
 import static javax.ejb.TransactionManagementType.BEAN;
 import javax.inject.Inject;
+import javax.swing.text.Document;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -67,46 +68,44 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     @EJB
     VocabularioVolatilRemote vocRAM;
 
+    HashMap<String, VocabularioBean> vocabulario;
+    HashMap<String, Integer> temp;
+
     @Override
     public String saveCount(List<File> archivos) {
         StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
         //Por casa archivo
+        long tiempoInicio = System.currentTimeMillis();
+        vocabulario = vocRAM.getVocabulario();
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             DocumentoBean docB = this.saveCountArch(archivo);
+            System.out.println("");
+            System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
             if (docB != null) {
-                HashMap<String, Integer> t = this.readFile(archivo);
-                this.saveVocabularioPosteo(docB, t);
+                this.readFile(archivo);
+                this.saveVocabularioPosteo(docB);
                 st.append("-").append(archivo.getAbsolutePath()).append("\n");
             }
+            System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
         }
+        long totalTiempo = System.currentTimeMillis() - tiempoInicio;
+        System.out.println("*********************El tiempo de indexacion de " + archivos.size() + " es :" + totalTiempo / 1000 + " seg");
+
         return st.toString();
+
     }
 
     @Override
     public void leerArchivoDefault() {
-        File archivo = new File("C:\\IDE\\chau.txt");
-        DocumentoBean docB = this.saveCountArch(archivo);
-        HashMap<String, Integer> hm = this.readFile(archivo);
-        this.saveVocabularioPosteo(docB, hm);
-
-        archivo = new File("C:\\IDE\\hola.txt");
-        docB = this.saveCountArch(archivo);
-        hm = this.readFile(archivo);
-        this.saveVocabularioPosteo(docB, hm);
-
-        archivo = new File("C:\\IDE\\quetal.txt");
-        docB = this.saveCountArch(archivo);
-        hm = this.readFile(archivo);
-        this.saveVocabularioPosteo(docB, hm);
 
     }
 
-    private HashMap<String, Integer> readFile(File f) {
+    private void readFile(File f) {
         // Pattern pattern = Pattern.compile("[ñÑA-Za-záÁéÉíÍóÓúÚ][ñÑa-zA-ZáÁéÉíÍóÓúÚ]+");
         Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
 
-        HashMap<String, Integer> hm = new HashMap<>(1000);
+        temp = new HashMap<>(10000);
         try {
             String charset = DetectorEncoding.getFileEncoding(f);
             FileInputStream fI = new FileInputStream(f);
@@ -128,17 +127,17 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                     }
                     if (!numero) {
                         String clave = st.toUpperCase();
-                        if (!hm.containsKey(clave)) {
-                            hm.put(clave, 1);
+                        if (!temp.containsKey(clave)) {
+                            temp.put(clave, 1);
                             //   System.out.println("Nueva palabra " + clave);
                         } else {
-                            int old = hm.get(clave);
+                            int old = temp.get(clave);
                             //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
                             //Para JAVA 1.8
                             //hm.replace(clave, old + 1);
                             //Para JAVA 1.7
-                            hm.remove(clave);
-                            hm.put(clave, old + 1);
+                            temp.remove(clave);
+                            temp.put(clave, old + 1);
                             //  System.out.println("No clave");
                         }
 
@@ -146,7 +145,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                 }
             }
-            System.out.println("FIN DOCUMENTO");
+            System.out.println("Creado Hash documento: " + f.getName() + " cant palabras: " + temp.size());
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,32 +155,34 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         } catch (IOException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return hm;
+
     }
 
     private DocumentoBean saveCountArch(File archivo) {
         String urlFile = "";
         urlFile = archivo.getAbsolutePath();
-        DocumentoBean docBean = docDao.buscarPorUrl(urlFile);
+        docDao.openConnection();
+        DocumentoBean docBean = docDao.buscarPorUrlSinAbrirCerrarConexion(urlFile);
+        DocumentoEntity docE;
         if (docBean == null) {
-            docBean = new DocumentoBean(archivo.getName(), urlFile);
-            DocumentoEntity docE = new Documento(docBean).getEntidad();
-            docDao.openConnection();
+           // docBean = new DocumentoBean(archivo.getName(), urlFile);
+            docE=new DocumentoEntity(archivo.getName(), urlFile);
+            // docE = new Documento(docBean).getEntidad();
             try {
                 docDao.getCon().setAutoCommit(false);
             } catch (SQLException ex) {
                 Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
             }
             docDao.create(docE);
-            docBean.setId(docE.getId());
+            docBean=new Documento(docE).getBean();
             return docBean;
         } else {
             return null;
         }
     }
 
-    private int saveVocabularioPosteo(DocumentoBean docB, HashMap<String, Integer> hm) {
-        System.out.println("*************INDEXADO");
+    private void saveVocabularioPosteo(DocumentoBean docB) {
+        System.out.println("*************INDEXADOR");
         long tiempoInicio = System.currentTimeMillis();
 //        try {
 //            tra.begin();
@@ -193,39 +194,48 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 //        }
         int repeticiones, cantPalabras = 0;
         String termino;
-        Iterator it = hm.entrySet().iterator();
-        HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();
+        Iterator it = temp.entrySet().iterator();
         vocDao.setCon(docDao.getCon());
         posDao.setCon(vocDao.getCon());
+        Map.Entry e;
+        VocabularioBean vocB;
+        VocabularioEntity vocE;
+        //PosteoBean posteoB;
+        PosteoEntity posE;
+        
         while (it.hasNext()) {
             cantPalabras++;
-            Map.Entry e = (Map.Entry) it.next();
+             e= (Map.Entry) it.next();
             termino = String.valueOf(e.getKey());
             repeticiones = (int) e.getValue();
 
-            VocabularioBean vocB = vocabulario.get(termino);
+            vocB = vocabulario.get(termino);
             if (vocB == null) {
-                vocB = new VocabularioBean(1, repeticiones, termino);
-                VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
+                //vocB = new VocabularioBean(1, repeticiones, termino);
+                vocE= new VocabularioEntity(termino, cantPalabras, cantPalabras);
+               // vocE = new Vocabulario(vocB).getEntidad();
 
                 vocDao.create(vocE);
-                vocB.setId(vocE.getId());
+                vocB=new Vocabulario(vocE).getBean();
                 vocabulario.put(termino, vocB);
             } else {
                 vocB.aparecioEnDoc();
                 if (repeticiones > vocB.getMax_tf()) {
                     vocB.setMax_tf(repeticiones);
                 }
-                VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
+                 vocE = new Vocabulario(vocB).getEntidad();
 
                 vocDao.update(vocE);
                 vocabulario.replace(termino, vocB);
             }
-            PosteoBean posteoB = new PosteoBean(repeticiones, vocB, docB);
-            PosteoEntity posE = new Posteo(posteoB).getEntidad();
-
+//             posteoB = new PosteoBean(repeticiones, vocB, docB);
+            posE=new PosteoEntity(repeticiones, vocB.getId(), docB.getId());
+             //posE = new Posteo(posteoB).getEntidad();
+            
+            //no se usa
+//            posteoB=new PosteoBean(posE.getId(), repeticiones, vocB, docB);
             posDao.create(posE);
-            posteoB.setId(posE.getId());
+//            posteoB.setId(posE.getId());
 
             // System.out.println("Impacto en base");
         }
@@ -235,25 +245,11 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
         posDao.closeConnection();
-//        try {
-//            tra.commit();
-//        } catch (RollbackException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (HeuristicMixedException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (HeuristicRollbackException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SecurityException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalStateException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SystemException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+
         vocRAM.setVocabulario(vocabulario);
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
         System.out.println("*********************El tiempo de indexacion de " + cantPalabras + " es :" + totalTiempo / 1000 + " seg");
-        return cantPalabras;
+
     }
 
     public class TempStore {

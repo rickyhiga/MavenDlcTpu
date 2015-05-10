@@ -28,6 +28,8 @@ public class VocabularioDao extends DBAccessMySql {
 
     @PersistenceContext(name = "MavenDlc-ejbPU")
     private EntityManager entityManager;
+    String tabla = "vocabulario";
+    String[] columnas = {"termino", "cant_doc", "max_tf"};
 
     public VocabularioBean buscarPorTermino(final String termino) {
         VocabularioBean vocB = null;
@@ -65,10 +67,10 @@ public class VocabularioDao extends DBAccessMySql {
     }
 
     public VocabularioEntity create(VocabularioEntity vocE) {
-        String[] columnas = {"termino", "cant_doc", "max_tf"};
-        String[] values = {vocE.getTermino(), ""+vocE.getCantDoc(), ""+vocE.getMaxTf()};
 
-        int id=this.insertarSinAbrirCerrarConexion("vocabulario", columnas, values);
+        String[] values = {vocE.getTermino(), "" + vocE.getCantDoc(), "" + vocE.getMaxTf()};
+
+        int id = this.insertarSinAbrirCerrarConexion(tabla, columnas, values);
         vocE.setId(id);
         return vocE;
 //        StringBuilder st = new StringBuilder("");
@@ -85,16 +87,10 @@ public class VocabularioDao extends DBAccessMySql {
     }
 
     public void update(VocabularioEntity vocE) {
-        try {
-            //   entityManager.getTransaction().begin();
+        String[] columns = {"cant_doc", "max_tf"};
+        String[] values = { "" + vocE.getCantDoc(), "" + vocE.getMaxTf()};
 
-            entityManager.persist(vocE);
-            entityManager.flush();
-            // entityManager.getTransaction().commit();
-        } catch (EclipseLinkException ex) {
-            //   entityManager.getTransaction().rollback();
-            throw new TechnicalException(ex);
-        }
+        super.actualizarSinAbrirCerrarConexion(tabla, columns, values, "id="+vocE.getId());
     }
 
 }
