@@ -55,23 +55,22 @@
     </h:body>
     
     <script>
-       $(document).ready(function(){
-        $(function() {
-	oTableDocRes = $('#table_documentos_res').dataTable({
+      
+      	oTableDoc = $('#table_documentos_res').dataTable({
         "bProcessing": true,
         "bServerSide": true,
         "iDisplayLength":25,
-        "sAjaxSource": "/api/listResultados.xhtml",
+        "sAjaxSource": "/consorcios/obtenerConsorcios",
         "fnServerData": function ( sSource, aoData, fnCallback ) {
             $.getJSON( sSource, aoData, function (json) {
                 fnCallback(json);
             });
         } ,
-        
+
         "aoColumnDefs": [
             {
-                "sName": "nombre",
-                "mData": "nombre",
+                "sName": "name",
+                "mData": "name",
                 "sTitle": "Nombre",
                 "aTargets": [0]
             },
@@ -80,16 +79,11 @@
                 "mData": "url",
                 "sTitle": "URL",
                 "aTargets": [1]
-            },
-            
-           
-            
+            }
             }]
     });
-
     
-});
-       }
+
     </script>
     
 </html>
