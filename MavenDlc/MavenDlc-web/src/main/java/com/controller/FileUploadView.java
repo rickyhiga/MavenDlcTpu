@@ -48,6 +48,7 @@ public class FileUploadView {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+
         File dir = new File("C:\\IDE");
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
@@ -67,6 +68,7 @@ public class FileUploadView {
 //        lista.add(f);
 //        f = new File("C:\\IDE\\quetal.txt");
 //        lista.add(f);
+
         idx.saveCount(lista);
 //        idx.leerArchivoDefault();
         ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("que Una Guardas");

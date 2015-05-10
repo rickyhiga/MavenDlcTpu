@@ -11,6 +11,7 @@ import beans.VocabularioBean;
 import daos.DocumentoDao;
 import daos.PosteoDao;
 import daos.VocabularioDao;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,70 +46,104 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     public ArrayList<DocumentoBean> busqueda(String consulta) {
         cantDocs = docDao.cantidadDocumentos();
         String var;
-        ArrayList<String> busqueda = new ArrayList<>(); //mi búsqueda en terminos parseados
-        ArrayList<VocabularioBean> busquedaBeans = new ArrayList<>(); //mi búsqueda en VocuabularioBean
-        ArrayList<PosteoBean> posteos = new ArrayList<>(); //mi lista de posteos en general
-        List<PosteoBean> auxPosteos = new ArrayList<>(); //mi lista de posteos en general
-        ArrayList<DocumentoBean> resultado = new ArrayList<>(); //lista de DocumentosBean ordenados
+        ArrayList<String> busqueda = null; //mi búsqueda en terminos parseados
+        ArrayList<VocabularioBean> busquedaBeans = null; //mi búsqueda en VocuabularioBean
+        ArrayList<PosteoBean> posteos = null; //mi lista de posteos en general
+        List<PosteoBean> auxPosteos = null; //mi lista de posteos en general
+        ArrayList<DocumentoBean> resultado = null; //lista de DocumentosBean ordenados
         HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();//obtengo el map de vocabularioBean
 
         //System.out.println("Busq RAM: " + vocabulario);
         //parseo la consulta
         //mejorar el delimitador comitas y eso
-        Scanner in = new Scanner(consulta).useDelimiter(" ");
-        while (in.hasNext()) {
-            var = in.next();
-            if (var.length() > 1) {
-                var = var.toUpperCase();
-                if (!busqueda.contains(var)) {
-                    busqueda.add(var);
+        if (consulta.length() > 0) {
+            Scanner in = new Scanner(consulta).useDelimiter(" ");
+            while (in.hasNext()) {
+                var = in.next();
+                System.out.println("VAR: " + var);
+                if (var.length() > 1) {
+                    var = var.toUpperCase();
+                    if (busqueda == null) {
+                        busqueda = new ArrayList<>();
+                        busqueda.add(var);
+                        System.out.println("consulta: " + var);
+                    } else {
+                        if (!busqueda.contains(var)) {
+                            busqueda.add(var);
+                            System.out.println("consulta: " + var);
+                        }
+                    }
+                }
+            }
+
+            //obtengo los vocabularioBean de busqueda
+            if (busqueda != null) {
+                for (int i = 0; i < busqueda.size(); i++) {
+                    VocabularioBean vb = (VocabularioBean) vocabulario.get(busqueda.get((i)));
+                    if (vb != null && busquedaBeans == null) {
+                        busquedaBeans = new ArrayList<>();
+                    }
+                    if (vb != null) {
+                        busquedaBeans.add(vb);
+                        System.out.println("Busco: " + vb);
+                    }
+                }
+
+                if (busquedaBeans != null) {
+                    //ordeno los terminos para empezar con los posteos mas cortos y relevantes
+                    ordenarTerminos(busquedaBeans);
+
+                    //busco los posteos
+                    for (VocabularioBean busquedaBean : busquedaBeans) {
+                        int id = busquedaBean.getId(); //obtengo el id para hacer la consulta
+                        auxPosteos = posDao.obtenerPosteosPorIdVocabularioOrderByTf(id);//agrego todos los posteos de la consulta
+                        if (auxPosteos != null && posteos == null) {
+                            posteos = new ArrayList<>();
+                        }
+                        if (auxPosteos != null) {
+                            for (PosteoBean pb : auxPosteos) {
+                                posteos.add(pb);
+                                System.out.println("Posteo: " + pb);
+                            }
+                        }
+                    }
+                    //obtengo los posteos
+                    if (posteos != null) {
+                        resultado = tratamientoPosteos(posteos);
+                    }
                 }
             }
         }
-
-        //obtengo los vocabularioBean de busqueda
-        for (int i = 0; i < busqueda.size(); i++) {
-            VocabularioBean vb = (VocabularioBean) vocabulario.get(busqueda.get((i)));
-            if (vb != null) {
-                busquedaBeans.add(vb);
-            }
-        }
-
-        //ordeno los terminos para empezar con los posteos mas cortos y relevantes
-        ordenarTerminos(busquedaBeans);
-
-        //busco los posteos
-        for (VocabularioBean busquedaBean : busquedaBeans) {
-            int id = busquedaBean.getId(); //obtengo el id para hacer la consulta
-            auxPosteos = posDao.obtenerPosteosPorIdVocabularioOrderByTf(id);//agrego todos los posteos de la consulta
-            for (PosteoBean pb : auxPosteos) {
-                posteos.add(pb);
-            }
-        }
-        //obtengo los posteos
-
-        resultado = tratamientoPosteos(posteos);
 
         return resultado;
     }
 
     private ArrayList<DocumentoBean> tratamientoPosteos(ArrayList<PosteoBean> posteos) {
         HashMap<Integer, DocumentoBean> documentos = new HashMap<>();
+        ArrayList<DocumentoBean> docByRank = null;
 
         for (PosteoBean posteo : posteos) {
-            double rank = (double) posteo.getCant_apariciones_tf() * (double) Math.log10((double) cantDocs / (double) posteo.getVocBean().getCant_doc());
+            BigDecimal tf = BigDecimal.valueOf(posteo.getCant_apariciones_tf());
+            System.out.println("TF: " + tf);
+            BigDecimal idf = BigDecimal.valueOf(Math.log((double) cantDocs / (double) posteo.getVocBean().getCant_doc()));
+            System.out.println("Idf: " + idf + " es el log de " + cantDocs + " sobre " + posteo.getVocBean().getCant_doc());
+            BigDecimal rank = idf.multiply(tf);
+            System.out.println("Rank: " + rank);
             DocumentoBean doc = posteo.getDocBean();
             doc.setPuntosRank(rank);
+            System.out.println("Documento Name " + doc.getNombre() + " Rank: " + rank);
             if (documentos.containsKey(doc.getId())) {
-                rank += documentos.get(doc.getId()).getPuntosRank();
+                rank.add(documentos.get(doc.getId()).getPuntosRank());
                 doc.setPuntosRank(rank);
             } else {
                 documentos.put(doc.getId(), doc);
             }
         }
 
-        ArrayList<DocumentoBean> docByRank = new ArrayList<>(documentos.values());
-        ordenarDocs(docByRank);
+        if (documentos.size() > 0) {
+            docByRank = new ArrayList<>(documentos.values());
+            ordenarDocs(docByRank);
+        }
 
         return docByRank;
     }
@@ -135,14 +170,14 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
             @Override
             public int compare(DocumentoBean d1, DocumentoBean d2) {
 
-                if (d1.getPuntosRank() > d2.getPuntosRank()) {
+                if (d2.getPuntosRank().compareTo(d1.getPuntosRank()) == 1) {
                     return -1;
                 }
-                if (d1.getPuntosRank() == d2.getPuntosRank()) {
-                    return 0;
+                if (d2.getPuntosRank().compareTo(d1.getPuntosRank()) == (-1)) {
+                    return 1;
                 }
 
-                return 1;
+                return 0;
             }
         });
     }

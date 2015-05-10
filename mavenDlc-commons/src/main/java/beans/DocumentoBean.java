@@ -6,6 +6,7 @@
 package beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *
@@ -14,11 +15,11 @@ import java.io.Serializable;
 public class DocumentoBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private int id=0;
+    private int id = 0;
     private String nombre;
     private String url;
     //private float moduloDoc;
-    private double puntosRank=0;
+    private BigDecimal puntosRank = new BigDecimal(0);
 
     public DocumentoBean() {
     }
@@ -33,9 +34,8 @@ public class DocumentoBean implements Serializable {
     public DocumentoBean(String nombre, String url) {
         this.nombre = nombre;
         this.url = url;
-       // this.moduloDoc = moduloDoc;
+        // this.moduloDoc = moduloDoc;
     }
-    
 
     public int getId() {
         return id;
@@ -61,11 +61,11 @@ public class DocumentoBean implements Serializable {
         this.url = url;
     }
 
-    public double getPuntosRank() {
+    public BigDecimal getPuntosRank() {
         return puntosRank;
     }
 
-    public void setPuntosRank(double puntosRank) {
+    public void setPuntosRank(BigDecimal puntosRank) {
         this.puntosRank = puntosRank;
     }
 
@@ -76,9 +76,8 @@ public class DocumentoBean implements Serializable {
 //    public void setModuloDoc(float moduloDoc) {
 //        this.moduloDoc = moduloDoc;
 //    }
-
     @Override
     public String toString() {
-        return "DocumentoBean{" + "id=" + id + ", nombre=" + nombre + ", url=" + url ;
+        return "DocumentoBean{" + "id=" + id + ", nombre=" + nombre + ", url=" + url;
     }
 }
