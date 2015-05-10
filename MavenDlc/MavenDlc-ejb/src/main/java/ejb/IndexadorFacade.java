@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,17 +34,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import static javax.ejb.TransactionManagementType.BEAN;
 import javax.inject.Inject;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
  *
  * @author Nico
  */
 @Stateless
+//@TransactionManagement(BEAN)
 public class IndexadorFacade implements IndexadorFacadeRemote {
 
+//    @Resource
+//    private UserTransaction tra;
     @Inject
     private DocumentoDao docDao;
     @Inject
@@ -117,7 +130,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                         String clave = st.toUpperCase();
                         if (!hm.containsKey(clave)) {
                             hm.put(clave, 1);
-                            System.out.println("Nueva palabra " + clave);
+                            //   System.out.println("Nueva palabra " + clave);
                         } else {
                             int old = hm.get(clave);
                             //DESCOMENTAR LA SENTENCIA SEGUN JAVA QUE VERSION DE JAVA TENGAS
@@ -126,7 +139,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                             //Para JAVA 1.7
                             hm.remove(clave);
                             hm.put(clave, old + 1);
-                            System.out.println("No clave");
+                            //  System.out.println("No clave");
                         }
 
                     }
@@ -153,6 +166,12 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         if (docBean == null) {
             docBean = new DocumentoBean(archivo.getName(), urlFile);
             DocumentoEntity docE = new Documento(docBean).getEntidad();
+            docDao.openConnection();
+            try {
+                docDao.getCon().setAutoCommit(false);
+            } catch (SQLException ex) {
+                Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+            }
             docDao.create(docE);
             docBean.setId(docE.getId());
             return docBean;
@@ -162,11 +181,22 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     }
 
     private int saveVocabularioPosteo(DocumentoBean docB, HashMap<String, Integer> hm) {
-
+        System.out.println("*************INDEXADO");
+        long tiempoInicio = System.currentTimeMillis();
+//        try {
+//            tra.begin();
+//
+//        } catch (NotSupportedException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SystemException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         int repeticiones, cantPalabras = 0;
         String termino;
         Iterator it = hm.entrySet().iterator();
         HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();
+        vocDao.setCon(docDao.getCon());
+        posDao.setCon(vocDao.getCon());
         while (it.hasNext()) {
             cantPalabras++;
             Map.Entry e = (Map.Entry) it.next();
@@ -177,6 +207,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             if (vocB == null) {
                 vocB = new VocabularioBean(1, repeticiones, termino);
                 VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
+
                 vocDao.create(vocE);
                 vocB.setId(vocE.getId());
                 vocabulario.put(termino, vocB);
@@ -186,17 +217,42 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                     vocB.setMax_tf(repeticiones);
                 }
                 VocabularioEntity vocE = new Vocabulario(vocB).getEntidad();
+
                 vocDao.update(vocE);
                 vocabulario.replace(termino, vocB);
             }
             PosteoBean posteoB = new PosteoBean(repeticiones, vocB, docB);
             PosteoEntity posE = new Posteo(posteoB).getEntidad();
+
             posDao.create(posE);
             posteoB.setId(posE.getId());
-            System.out.println("Impacto en base");
 
+            // System.out.println("Impacto en base");
         }
+        try {
+            posDao.getCon().setAutoCommit(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        posDao.closeConnection();
+//        try {
+//            tra.commit();
+//        } catch (RollbackException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (HeuristicMixedException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (HeuristicRollbackException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SecurityException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalStateException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SystemException ex) {
+//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         vocRAM.setVocabulario(vocabulario);
+        long totalTiempo = System.currentTimeMillis() - tiempoInicio;
+        System.out.println("*********************El tiempo de indexacion de " + cantPalabras + " es :" + totalTiempo / 1000 + " seg");
         return cantPalabras;
     }
 

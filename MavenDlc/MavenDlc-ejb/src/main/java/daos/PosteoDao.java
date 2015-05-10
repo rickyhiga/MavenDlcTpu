@@ -10,6 +10,7 @@ import beans.PosteoBean;
 import beans.VocabularioBean;
 import business.Posteo;
 import commons.DaoEclipseLink;
+import db.DBAccessMySql;
 import entity.DocumentoEntity;
 import entity.PosteoEntity;
 import java.util.ArrayList;
@@ -24,8 +25,9 @@ import org.eclipse.persistence.exceptions.EclipseLinkException;
  *
  * @author user
  */
-public class PosteoDao extends DaoEclipseLink<PosteoEntity, Integer> {
-    
+public class PosteoDao extends DBAccessMySql {
+    @PersistenceContext(unitName = "MavenDlc-ejbPU")
+    protected EntityManager entityManager;
     @Inject
     VocabularioDao vocDao;
     @Inject
@@ -62,4 +64,23 @@ public class PosteoDao extends DaoEclipseLink<PosteoEntity, Integer> {
         }
         return posteos;
     }
+     public PosteoEntity create(PosteoEntity posE) {
+        String[] columnas = {"vocabulario_id", "documento_id", "cant_apariciones_tf"};
+        String[] values = {""+posE.getVocabularioId(), ""+posE.getDocumentoId(), ""+posE.getCantAparicionesTf()};
+
+        int id=this.insertarSinAbrirCerrarConexion("posteo", columnas, values);
+        posE.setId(id);
+        return posE;
+//         StringBuilder st = new StringBuilder("");
+//        st.append("INSERT INTO posteo(vocabulario_id, documento_id, cant_apariciones_tf) VALUES(");
+//        st.append(posE.getVocabularioId());
+//        st.append(", ");
+//        st.append(posE.getDocumentoId());
+//        st.append(", ");
+//        st.append(posE.getCantAparicionesTf());
+//        st.append(");");
+//        super.setQuery(st.toString());
+//        super.executeSingleQuery();
+    }
+
 }

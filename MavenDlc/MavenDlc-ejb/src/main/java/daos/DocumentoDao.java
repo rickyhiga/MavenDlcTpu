@@ -8,8 +8,12 @@ package daos;
 import beans.DocumentoBean;
 import business.Documento;
 import commons.DaoEclipseLink;
+import db.DBAccessMySql;
 import entity.DocumentoEntity;
+import exceptions.TechnicalException;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.eclipse.persistence.exceptions.EclipseLinkException;
@@ -18,9 +22,10 @@ import org.eclipse.persistence.exceptions.EclipseLinkException;
  *
  * @author Nico
  */
-public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
-//    @PersistenceContext(name = "MavenDlc-ejbPU")
-//    private EntityManager entityManager;
+public class DocumentoDao extends DBAccessMySql {
+
+    @PersistenceContext(name = "MavenDlc-ejbPU")
+    private EntityManager entityManager;
 
     public DocumentoBean buscarPorUrl(final String url) {
         DocumentoBean docB = null;
@@ -52,6 +57,30 @@ public class DocumentoDao extends DaoEclipseLink<DocumentoEntity, Integer> {
             result++;
         }
         return result;
+    }
+
+    public DocumentoEntity create(DocumentoEntity docE) {
+    //    super.openConnection();
+        String[] columnas = {"nombre", "url"};
+        String[] values = {docE.getNombre(), docE.getUrl()};
+
+        int id = this.insertarSinAbrirCerrarConexion("documento", columnas, values);
+        docE.setId(id);
+        return docE;
+    }
+    public List<DocumentoEntity> findAll()
+    {
+        try
+        {
+            Query query = entityManager.createQuery("DocumentoEntity.findAll");
+
+            return query.getResultList();
+        }
+        catch (EclipseLinkException ex)
+        {
+            throw new TechnicalException(ex);
+        }
+
     }
 
 }
