@@ -28,6 +28,7 @@ public class VocabularioVolatil implements VocabularioVolatilRemote {
     public void crearVocabulario() {
         if (vocabulario == null) {
             vocabulario = vocDao.listarTodosMap();
+            System.out.println("CREO VOCABULARIO DESDE DB");
         }
     }
 
