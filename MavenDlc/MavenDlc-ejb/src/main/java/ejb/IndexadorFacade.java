@@ -165,8 +165,8 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         DocumentoBean docBean = docDao.buscarPorUrlSinAbrirCerrarConexion(urlFile);
         DocumentoEntity docE;
         if (docBean == null) {
-           // docBean = new DocumentoBean(archivo.getName(), urlFile);
-            docE=new DocumentoEntity(archivo.getName(), urlFile);
+            // docBean = new DocumentoBean(archivo.getName(), urlFile);
+            docE = new DocumentoEntity(archivo.getName(), urlFile);
             // docE = new Documento(docBean).getEntidad();
             try {
                 docDao.getCon().setAutoCommit(false);
@@ -174,7 +174,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                 Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
             }
             docDao.create(docE);
-            docBean=new Documento(docE).getBean();
+            docBean = new Documento(docE).getBean();
             return docBean;
         } else {
             return null;
@@ -184,60 +184,39 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private void saveVocabularioPosteo(DocumentoBean docB) {
         System.out.println("*************INDEXADOR");
         long tiempoInicio = System.currentTimeMillis();
-//        try {
-//            tra.begin();
-//
-//        } catch (NotSupportedException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SystemException ex) {
-//            Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        int repeticiones, cantPalabras = 0;
+
+        int repeticiones, cantPalabras = 0, cantNew=0;
         String termino;
         Iterator it = temp.entrySet().iterator();
+        Map.Entry e;
         vocDao.setCon(docDao.getCon());
         posDao.setCon(vocDao.getCon());
-        Map.Entry e;
+        HashMap<String, VocabularioBean> modificados = new HashMap<>(5000);
         VocabularioBean vocB;
         VocabularioEntity vocE;
-        //PosteoBean posteoB;
+
         PosteoEntity posE;
-        
+
         while (it.hasNext()) {
             cantPalabras++;
-             e= (Map.Entry) it.next();
+            e = (Map.Entry) it.next();
             termino = String.valueOf(e.getKey());
             repeticiones = (int) e.getValue();
-
+            vocB = null;
             vocB = vocabulario.get(termino);
             if (vocB == null) {
-                //vocB = new VocabularioBean(1, repeticiones, termino);
-                vocE= new VocabularioEntity(termino, cantPalabras, cantPalabras);
-               // vocE = new Vocabulario(vocB).getEntidad();
-
+                vocE = new VocabularioEntity(termino, 1, repeticiones);
+                cantNew++;
                 vocDao.create(vocE);
-                vocB=new Vocabulario(vocE).getBean();
+                vocB = new Vocabulario(vocE).getBean();
                 vocabulario.put(termino, vocB);
             } else {
-                vocB.aparecioEnDoc();
-                if (repeticiones > vocB.getMax_tf()) {
-                    vocB.setMax_tf(repeticiones);
-                }
-                 vocE = new Vocabulario(vocB).getEntidad();
-
-                vocDao.update(vocE);
+                vocB.aparecioEnDoc(repeticiones);
                 vocabulario.replace(termino, vocB);
+                modificados.put(termino, vocB);
             }
-//             posteoB = new PosteoBean(repeticiones, vocB, docB);
-            posE=new PosteoEntity(repeticiones, vocB.getId(), docB.getId());
-             //posE = new Posteo(posteoB).getEntidad();
-            
-            //no se usa
-//            posteoB=new PosteoBean(posE.getId(), repeticiones, vocB, docB);
+            posE = new PosteoEntity(repeticiones, vocB.getId(), docB.getId());
             posDao.create(posE);
-//            posteoB.setId(posE.getId());
-
-            // System.out.println("Impacto en base");
         }
         try {
             posDao.getCon().setAutoCommit(true);
@@ -245,10 +224,16 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
         posDao.closeConnection();
-
+        it = modificados.entrySet().iterator();
+        while (it.hasNext()) {
+            e = (Map.Entry) it.next();
+            vocB = (VocabularioBean) e.getValue();
+            vocDao.update(new Vocabulario(vocB).getEntidad());
+        }
         vocRAM.setVocabulario(vocabulario);
+
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-        System.out.println("*********************El tiempo de indexacion de " + cantPalabras + " es :" + totalTiempo / 1000 + " seg");
+        System.out.println("*********************Cant Palabras: " + cantPalabras + "-Nuevas: "+cantNew+"-Updates: "+modificados.size()+"-TIEMPO: "+ totalTiempo / 1000 + " seg");
 
     }
 

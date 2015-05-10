@@ -70,9 +70,12 @@ public class VocabularioBean implements Serializable {
     public void setTermino(String termino) {
         this.termino = termino;
     }
-
-    public void aparecioEnDoc() {
-        this.cant_doc = this.cant_doc + 1;
+//
+    public void aparecioEnDoc(int repeticiones) {
+        this.cant_doc++;
+        if (repeticiones > this.getMax_tf()) {
+            this.setMax_tf(repeticiones);
+        }
     }
 
     @Override
