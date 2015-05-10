@@ -49,14 +49,14 @@ public class FileUploadView {
 //            e.printStackTrace();
 //        }
 
-        File dir = new File("C:\\IDE");
+        File dir = new File("C:\\IDE\\TextosDLC");
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 lista.add(child);
             }
         } else {
-    // Handle the case where dir is not really a directory.
+            // Handle the case where dir is not really a directory.
             // Checking dir.isDirectory() above would not be sufficient
             // to avoid race conditions with another process that deletes
             // directories.

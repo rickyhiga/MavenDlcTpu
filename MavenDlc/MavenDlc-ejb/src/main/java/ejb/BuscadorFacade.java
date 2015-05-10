@@ -39,9 +39,9 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     VocabularioDao vocDao;
     @EJB
     VocabularioVolatilRemote vocRAM;
-
+    
     int cantDocs = 0;
-
+    
     @Override
     public ArrayList<DocumentoBean> busqueda(String consulta) {
         cantDocs = docDao.cantidadDocumentos();
@@ -88,7 +88,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
                         System.out.println("Busco: " + vb);
                     }
                 }
-
+                
                 if (busquedaBeans != null) {
                     //ordeno los terminos para empezar con los posteos mas cortos y relevantes
                     ordenarTerminos(busquedaBeans);
@@ -114,18 +114,18 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
                 }
             }
         }
-
+        
         return resultado;
     }
-
+    
     private ArrayList<DocumentoBean> tratamientoPosteos(ArrayList<PosteoBean> posteos) {
         HashMap<Integer, DocumentoBean> documentos = new HashMap<>();
         ArrayList<DocumentoBean> docByRank = null;
-
+        
         for (PosteoBean posteo : posteos) {
             BigDecimal tf = BigDecimal.valueOf(posteo.getCant_apariciones_tf());
             System.out.println("TF: " + tf);
-            BigDecimal idf = BigDecimal.valueOf(Math.log((double) cantDocs / (double) posteo.getVocBean().getCant_doc()));
+            BigDecimal idf = BigDecimal.valueOf(Math.log10((double) cantDocs / (double) posteo.getVocBean().getCant_doc()));
             System.out.println("Idf: " + idf + " es el log de " + cantDocs + " sobre " + posteo.getVocBean().getCant_doc());
             BigDecimal rank = idf.multiply(tf);
             System.out.println("Rank: " + rank);
@@ -139,47 +139,40 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
                 documentos.put(doc.getId(), doc);
             }
         }
-
+        
         if (documentos.size() > 0) {
             docByRank = new ArrayList<>(documentos.values());
             ordenarDocs(docByRank);
         }
-
+        
         return docByRank;
     }
-
+    
     private void ordenarTerminos(ArrayList<VocabularioBean> original) {
         Collections.sort(original, new Comparator<VocabularioBean>() {
             @Override
             public int compare(VocabularioBean v1, VocabularioBean v2) {
-
+                
                 if (v1.getCant_doc() < v2.getCant_doc()) {
                     return -1;
                 }
                 if (v1.getCant_doc() == v2.getCant_doc()) {
                     return 0;
                 }
-
+                
                 return 1;
             }
         });
     }
-
+    
     private void ordenarDocs(ArrayList<DocumentoBean> original) {
         Collections.sort(original, new Comparator<DocumentoBean>() {
             @Override
             public int compare(DocumentoBean d1, DocumentoBean d2) {
-
-                if (d2.getPuntosRank().compareTo(d1.getPuntosRank()) == 1) {
-                    return -1;
-                }
-                if (d2.getPuntosRank().compareTo(d1.getPuntosRank()) == (-1)) {
-                    return 1;
-                }
-
-                return 0;
+                
+                return d1.getPuntosRank().compareTo(d2.getPuntosRank());
             }
         });
     }
-
+    
 }
