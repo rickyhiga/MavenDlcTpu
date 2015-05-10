@@ -48,8 +48,6 @@ public class CtrBusqueda {
     lista = list;
         
         System.out.println("**LOG NICO: la lista trajo:"+lista.size());
-        
-        
         return "principal";
 
     }
