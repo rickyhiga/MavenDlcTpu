@@ -84,6 +84,7 @@ public class CtrBusqueda {
         externalContext.setResponseCharacterEncoding("UTF-8");
         externalContext.getResponseOutputWriter().write(json);
         facesContext.responseComplete();
+        this.lista = null;
     }
 
 }
