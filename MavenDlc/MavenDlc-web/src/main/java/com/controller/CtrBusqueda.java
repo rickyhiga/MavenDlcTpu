@@ -38,29 +38,37 @@ public class CtrBusqueda {
     private DocumentoBean relevante3;
     private DocumentoBean relevante4;
     private DocumentoBean relevante5;
+    private String resumenBusqueda = "";
 
     public CtrBusqueda() {
     }
 
     public String buscar() {
         System.out.println("**LOG NICO: el texto: " + this.getTxtBusqueda());
+        long tiempoInicio = System.currentTimeMillis();
+
         lista = buscadorBean.busqueda(this.getTxtBusqueda());
-        if (lista.size() > 0) {
-            relevante1 = lista.get(0);
+        if (lista != null) {
+            if (lista.size() > 0) {
+                relevante1 = lista.get(0);
+            }
+            if (lista.size() > 1) {
+                relevante2 = lista.get(1);
+            }
+            if (lista.size() > 2) {
+                relevante3 = lista.get(2);
+            }
+            if (lista.size() > 3) {
+                relevante4 = lista.get(3);
+            }
+            if (lista.size() > 4) {
+                relevante5 = lista.get(4);
+            }
+            System.out.println("**LOG NICO: la lista trajo:" + lista.size());
+            long totalTiempo = System.currentTimeMillis() - tiempoInicio;
+            resumenBusqueda = lista.size() + " resultados de búsqueda en " + (float) totalTiempo / (float) 1000 + " segundos";
         }
-        if (lista.size() > 1) {
-            relevante2 = lista.get(1);
-        }
-        if (lista.size() > 2) {
-            relevante3 = lista.get(2);
-        }
-        if (lista.size() > 3) {
-            relevante4 = lista.get(3);
-        }
-        if (lista.size() > 4) {
-            relevante5 = lista.get(4);
-        }
-        System.out.println("**LOG NICO: la lista trajo:" + lista.size());
+
         return "principal";
 
     }
@@ -121,6 +129,14 @@ public class CtrBusqueda {
         this.relevante5 = relevante5;
     }
 
+    public String getResumenBusqueda() {
+        return resumenBusqueda;
+    }
+
+    public void setResumenBusqueda(String resumenBusqueda) {
+        this.resumenBusqueda = resumenBusqueda;
+    }
+
     public void renderJson() throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         DataTableDocumentos dO = new DataTableDocumentos();
@@ -145,6 +161,8 @@ public class CtrBusqueda {
         externalContext.getResponseOutputWriter().write(json);
         facesContext.responseComplete();
         this.lista = null;
+        this.txtBusqueda = "";
+        this.resumenBusqueda = "";
     }
 
 }
