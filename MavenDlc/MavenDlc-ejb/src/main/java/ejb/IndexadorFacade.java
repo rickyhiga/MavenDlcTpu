@@ -92,6 +92,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                     st.append("-").append(archivo.getAbsolutePath()).append("\n");
                 }
                 System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
+                
             } else {
                 System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
             }
