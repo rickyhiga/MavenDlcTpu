@@ -96,7 +96,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                 System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
             }
             long parcialT = System.currentTimeMillis() - tiempoInicio;
-            System.out.println("Tiempo de procesamiento: "+parcialT);
+            System.out.println("Tiempo de procesamiento: "+parcialT/1000+" seg");
 
         }
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
