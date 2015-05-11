@@ -26,6 +26,24 @@ $(document).ready(function(){
                 "mData": "url",
                 "sTitle": "URL",
                 "aTargets": [1]
+            },
+            {
+                "sName": "Actions",
+                "sTitle": "Acciones",
+                "sClass": "td-actions",
+                "mData": "id",
+                "bSortable": false,
+                "aTargets": [2],
+                "mRender": function (data, type, full) {
+                    var returnButton = '<div class="btn-group">';
+                    
+                        returnButton += '<a href="mostrarDoc.xhtml?url=' + full.url + '" class="btn btn-mini btn-success">' +
+                                                '<i class="fa fa-list bigger-120"></i> Ver Documento' +
+                                            '</a>';
+		
+                        returnButton += '</div>';
+                    return returnButton;
+                }
             }
             ]
     });

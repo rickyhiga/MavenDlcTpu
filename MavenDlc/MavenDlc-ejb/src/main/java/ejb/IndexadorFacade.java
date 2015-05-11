@@ -170,6 +170,8 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     private DocumentoBean saveCountArch(File archivo) {
         String urlFile = "";
         urlFile = archivo.getAbsolutePath();
+        urlFile = urlFile.replace("\\", "/");
+        System.out.println("***LOG NICO CAMBIADO URL:"+urlFile);
         docDao.openConnection();
         DocumentoBean docBean = docDao.buscarPorUrlSinAbrirCerrarConexion(urlFile);
         DocumentoEntity docE;
