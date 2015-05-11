@@ -147,7 +147,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
                 long inicioIndex = System.currentTimeMillis();
                 this.readFile(archivo);
                 int[] valores=this.saveVocabularioPosteo(docB);
-                long totalIndex = System.currentTimeMillis() - tiempoInicio;
+                long totalIndex = System.currentTimeMillis() - inicioIndex;
                 NotificacionBean not = new NotificacionBean(docB, totalIndex, valores[0], valores[1], valores[2]);
                 archivosIndexados.add(not);
                 System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
