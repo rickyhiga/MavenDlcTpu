@@ -33,6 +33,11 @@ public class CtrBusqueda {
 
     private String txtBusqueda;
     private ArrayList<DocumentoBean> lista;
+    private DocumentoBean relevante1;
+    private DocumentoBean relevante2;
+    private DocumentoBean relevante3;
+    private DocumentoBean relevante4;
+    private DocumentoBean relevante5;
 
     public CtrBusqueda() {
     }
@@ -40,6 +45,21 @@ public class CtrBusqueda {
     public String buscar() {
         System.out.println("**LOG NICO: el texto: " + this.getTxtBusqueda());
         lista = buscadorBean.busqueda(this.getTxtBusqueda());
+        if (lista.size() > 0) {
+            relevante1 = lista.get(0);
+        }
+        if (lista.size() > 1) {
+            relevante2 = lista.get(1);
+        }
+        if (lista.size() > 2) {
+            relevante3 = lista.get(2);
+        }
+        if (lista.size() > 3) {
+            relevante4 = lista.get(3);
+        }
+        if (lista.size() > 4) {
+            relevante5 = lista.get(4);
+        }
         System.out.println("**LOG NICO: la lista trajo:" + lista.size());
         return "principal";
 
@@ -59,6 +79,46 @@ public class CtrBusqueda {
 
     public void setLista(ArrayList<DocumentoBean> lista) {
         this.lista = lista;
+    }
+
+    public DocumentoBean getRelevante1() {
+        return relevante1;
+    }
+
+    public void setRelevante1(DocumentoBean relevante1) {
+        this.relevante1 = relevante1;
+    }
+
+    public DocumentoBean getRelevante2() {
+        return relevante2;
+    }
+
+    public void setRelevante2(DocumentoBean relevante2) {
+        this.relevante2 = relevante2;
+    }
+
+    public DocumentoBean getRelevante3() {
+        return relevante3;
+    }
+
+    public void setRelevante3(DocumentoBean relevante3) {
+        this.relevante3 = relevante3;
+    }
+
+    public DocumentoBean getRelevante4() {
+        return relevante4;
+    }
+
+    public void setRelevante4(DocumentoBean relevante4) {
+        this.relevante4 = relevante4;
+    }
+
+    public DocumentoBean getRelevante5() {
+        return relevante5;
+    }
+
+    public void setRelevante5(DocumentoBean relevante5) {
+        this.relevante5 = relevante5;
     }
 
     public void renderJson() throws IOException {
