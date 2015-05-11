@@ -87,8 +87,8 @@ public class VocabularioDao extends DBAccessMySql {
     }
 
     public void update(VocabularioEntity vocE) {
-        String[] columns = {"cant_doc", "max_tf"};
-        String[] values = { "" + vocE.getCantDoc(), "" + vocE.getMaxTf()};
+        String[] columns = { "max_tf"};
+        String[] values = {  "" + vocE.getMaxTf()};
 
         super.actualizarSinAbrirCerrarConexion(tabla, columns, values, "id="+vocE.getId());
     }

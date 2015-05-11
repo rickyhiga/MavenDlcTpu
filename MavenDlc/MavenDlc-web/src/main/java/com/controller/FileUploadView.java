@@ -38,6 +38,25 @@ public class FileUploadView {
     @EJB
     private IndexadorFacadeRemote idx;
 
+//    private static void printFilesInFolder(Drive service, String folderId)
+//            throws IOException {
+//        Children.List request = service.children().list(folderId);
+//
+//        do {
+//            try {
+//                ChildList children = request.execute();
+//
+//                for (ChildReference child : children.getItems()) {
+//                    System.out.println("File Id: " + child.getId());
+//                }
+//                request.setPageToken(children.getNextPageToken());
+//            } catch (IOException e) {
+//                System.out.println("An error occurred: " + e);
+//                request.setPageToken(null);
+//            }
+//        } while (request.getPageToken() != null
+//                && request.getPageToken().length() > 0);
+//    }
     public void handleFileUpload(FileUploadEvent event) {
         ArrayList<File> lista = new ArrayList<>();
 //        try {
@@ -49,25 +68,21 @@ public class FileUploadView {
 //            e.printStackTrace();
 //        }
 
-        File dir = new File("C:\\IDE\\TextosDLC");
+        File dir = new File("C:\\IDE\\Menos");
         File[] directoryListing = dir.listFiles();
-        int count=0;
+        int count = 0;
         if (directoryListing != null) {
             for (File child : directoryListing) {
-//                count++;
-//                if(count>1){
-//                    break;
-//                }
+                count++;
+                if(count>5){
+                    break;
+                }
+                
                 lista.add(child);
-                
-                
-                        
             }
+            idx.saveCount(lista);
         } else {
-            // Handle the case where dir is not really a directory.
-            // Checking dir.isDirectory() above would not be sufficient
-            // to avoid race conditions with another process that deletes
-            // directories.
+
             System.out.println("NO EXISTE LA CARPETA");
         }
 //        File f = new File("C:\\IDE\\prueba.txt");
@@ -77,7 +92,6 @@ public class FileUploadView {
 //        f = new File("C:\\IDE\\quetal.txt");
 //        lista.add(f);
 
-        idx.saveCount(lista);
 //        idx.leerArchivoDefault();
         ArrayList<DocumentoBean> busqueda = buscadorBean.busqueda("que Una Guardas");
         System.out.println("BUSQUEDA");

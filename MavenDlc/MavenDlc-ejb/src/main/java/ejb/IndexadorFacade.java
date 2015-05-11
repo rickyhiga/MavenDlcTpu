@@ -80,14 +80,20 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             DocumentoBean docB = this.saveCountArch(archivo);
-            System.out.println("");
-            System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
             if (docB != null) {
-                this.readFile(archivo);
-                this.saveVocabularioPosteo(docB);
-                st.append("-").append(archivo.getAbsolutePath()).append("\n");
+                System.out.println("");
+                System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
+                if (docB != null) {
+                    this.readFile(archivo);
+
+                    this.saveVocabularioPosteo(docB);
+                    st.append("-").append(archivo.getAbsolutePath()).append("\n");
+                }
+                System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
+            } else {
+                System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
             }
-            System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
+
         }
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
         System.out.println("*********************El tiempo de indexacion de " + archivos.size() + " es :" + totalTiempo / 1000 + " seg");
@@ -185,7 +191,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         System.out.println("*************INDEXADOR");
         long tiempoInicio = System.currentTimeMillis();
 
-        int repeticiones, cantPalabras = 0, cantNew=0;
+        int repeticiones, cantPalabras = 0, cantNew = 0;
         String termino;
         Iterator it = temp.entrySet().iterator();
         Map.Entry e;
@@ -205,15 +211,22 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             vocB = null;
             vocB = vocabulario.get(termino);
             if (vocB == null) {
-                vocE = new VocabularioEntity(termino, 1, repeticiones);
+                //0 porque el indexador se encarga de ponerle 1
+                vocE = new VocabularioEntity(termino, repeticiones, 0);
                 cantNew++;
                 vocDao.create(vocE);
                 vocB = new Vocabulario(vocE).getBean();
                 vocabulario.put(termino, vocB);
             } else {
-                vocB.aparecioEnDoc(repeticiones);
+
+                vocB.aparecioEnDoc();
+                if (repeticiones > vocB.getMax_tf()) {
+                    vocB.setMax_tf(repeticiones);
+                    modificados.put(termino, vocB);
+
+                }
                 vocabulario.replace(termino, vocB);
-                modificados.put(termino, vocB);
+
             }
             posE = new PosteoEntity(repeticiones, vocB.getId(), docB.getId());
             posDao.create(posE);
@@ -233,7 +246,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         vocRAM.setVocabulario(vocabulario);
 
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-        System.out.println("*********************Cant Palabras: " + cantPalabras + "-Nuevas: "+cantNew+"-Updates: "+modificados.size()+"-TIEMPO: "+ totalTiempo / 1000 + " seg");
+        System.out.println("*********************Cant Palabras: " + cantPalabras + "-Nuevas: " + cantNew + "-Updates: " + modificados.size() + "-TIEMPO: " + totalTiempo / 1000 + " seg");
 
     }
 
