@@ -8,9 +8,12 @@ package ejb;
 import beans.DocumentoBean;
 import beans.PosteoBean;
 import beans.VocabularioBean;
+import commons.DetectorEncoding;
 import daos.DocumentoDao;
 import daos.PosteoDao;
 import daos.VocabularioDao;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,8 +50,7 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
     @Override
     public ArrayList<DocumentoBean> busqueda(String consulta) {
         cantDocs = docDao.cantidadDocumentos();
-        String var;
-        ArrayList<String> busqueda = null; //mi búsqueda en terminos parseados
+        ArrayList<String> busqueda = new ArrayList<>(); //mi búsqueda en terminos parseados
         ArrayList<VocabularioBean> busquedaBeans = null; //mi búsqueda en VocuabularioBean
         ArrayList<PosteoBean> posteos = null; //mi lista de posteos en general
         List<PosteoBean> auxPosteos = null; //mi lista de posteos en general
@@ -59,20 +63,46 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         //parseo la consulta
         //mejorar el delimitador comitas y eso
         if (consulta.length() > 0) {
-            Scanner in = new Scanner(consulta).useDelimiter(" ");
+            Scanner in = new Scanner(consulta);
+//            while (in.hasNext()) {
+//                var = in.next();
+//                if (var.length() > 1) {
+//                    var = var.toUpperCase();
+//                    if (busqueda == null) {
+//                        busqueda = new ArrayList<>();
+//                        busqueda.add(var);
+//                    } else {
+//                        if (!busqueda.contains(var)) {
+//                            busqueda.add(var);
+//                        }
+//                    }
+//                }
+//            }
+
+            Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
+
             while (in.hasNext()) {
-                var = in.next();
-                if (var.length() > 1) {
-                    var = var.toUpperCase();
-                    if (busqueda == null) {
-                        busqueda = new ArrayList<>();
-                        busqueda.add(var);
-                    } else {
-                        if (!busqueda.contains(var)) {
-                            busqueda.add(var);
+
+                Matcher matcher = pattern.matcher(in.nextLine());
+                while (matcher.find()) {
+                    String st = matcher.group();
+                    boolean numero = false;
+                    for (int i = 0; i < st.length(); i++) {
+                        if (st.charAt(i) == '_' || st.charAt(i) == '0' || st.charAt(i) == '1' || st.charAt(i) == '2' || st.charAt(i) == '3' || st.charAt(i) == '4' || st.charAt(i) == '5' || st.charAt(i) == '6' || st.charAt(i) == '7' || st.charAt(i) == '8' || st.charAt(i) == '9') {
+                            numero = true;
+                            break;
                         }
+
+                    }
+                    if (!numero) {
+                        String clave = st.toUpperCase();
+                        if (!busqueda.contains(clave)) {
+                            busqueda.add(clave);
+                        }
+
                     }
                 }
+
             }
 
             //obtengo los vocabularioBean de busqueda
