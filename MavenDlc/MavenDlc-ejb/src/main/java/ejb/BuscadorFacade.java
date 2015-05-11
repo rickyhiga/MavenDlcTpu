@@ -57,56 +57,50 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         ArrayList<DocumentoBean> resultado = null; //lista de DocumentosBean ordenados
         HashMap<String, VocabularioBean> vocabulario = vocRAM.getVocabulario();//obtengo el map de vocabularioBean
 
-        long tiempoInicio = System.currentTimeMillis();
-
         //System.out.println("Busq RAM: " + vocabulario);
         //parseo la consulta
         //mejorar el delimitador comitas y eso
         if (consulta.length() > 0) {
-            Scanner in = new Scanner(consulta);
-//            while (in.hasNext()) {
-//                var = in.next();
-//                if (var.length() > 1) {
-//                    var = var.toUpperCase();
-//                    if (busqueda == null) {
-//                        busqueda = new ArrayList<>();
-//                        busqueda.add(var);
-//                    } else {
-//                        if (!busqueda.contains(var)) {
-//                            busqueda.add(var);
-//                        }
-//                    }
-//                }
-//            }
-
-            Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
-
+            Scanner in = new Scanner(consulta).useDelimiter("[^a-zA-ZñÑá-úÁ-Ú']");
             while (in.hasNext()) {
-
-                Matcher matcher = pattern.matcher(in.nextLine());
-                while (matcher.find()) {
-                    String st = matcher.group();
-                    boolean numero = false;
-                    for (int i = 0; i < st.length(); i++) {
-                        if (st.charAt(i) == '_' || st.charAt(i) == '0' || st.charAt(i) == '1' || st.charAt(i) == '2' || st.charAt(i) == '3' || st.charAt(i) == '4' || st.charAt(i) == '5' || st.charAt(i) == '6' || st.charAt(i) == '7' || st.charAt(i) == '8' || st.charAt(i) == '9') {
-                            numero = true;
-                            break;
-                        }
-
-                    }
-                    if (!numero) {
-                        String clave = st.toUpperCase();
-                        if (!busqueda.contains(clave)) {
-                            busqueda.add(clave);
-                        }
-
+                String var = in.next();
+                if (var.length() > 0) {
+                    var = var.toUpperCase();
+                    if (!busqueda.contains(var)) {
+                        busqueda.add(var);
+//                        System.out.println("consulta " + var);
                     }
                 }
-
             }
 
+//            Pattern pattern = Pattern.compile("([A-Za-z])\\w+");
+//
+//            while (in.hasNext()) {
+//
+//                Matcher matcher = pattern.matcher(in.nextLine());
+//                while (matcher.find()) {
+//                    String st = matcher.group();
+//                    boolean numero = false;
+//                    for (int i = 0; i < st.length(); i++) {
+//                        if (st.charAt(i) == '_' || st.charAt(i) == '0' || st.charAt(i) == '1' || st.charAt(i) == '2' || st.charAt(i) == '3' || st.charAt(i) == '4' || st.charAt(i) == '5' || st.charAt(i) == '6' || st.charAt(i) == '7' || st.charAt(i) == '8' || st.charAt(i) == '9') {
+//                            numero = true;
+//                            break;
+//                        }
+//
+//                    }
+//                    if (!numero) {
+//                        String clave = st.toUpperCase();
+//                        if (!busqueda.contains(clave)) {
+//                            busqueda.add(clave);
+//                            System.out.println("clave " + clave);
+//                        }
+//
+//                    }
+//                }
+//
+//            }
             //obtengo los vocabularioBean de busqueda
-            if (busqueda != null) {
+            if (busqueda.size() > 0) {
                 for (int i = 0; i < busqueda.size(); i++) {
                     VocabularioBean vb = (VocabularioBean) vocabulario.get(busqueda.get((i)));
                     if (vb != null && busquedaBeans == null) {
@@ -141,9 +135,6 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
                 }
             }
         }
-
-        long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-        System.out.println("******El tiempo de busquedaentre " + posteos.size() + " posteos es de " + totalTiempo + " milisegundos*****");
 
         return resultado;
     }
@@ -200,7 +191,13 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
             @Override
             public int compare(DocumentoBean d1, DocumentoBean d2) {
 
-                return d1.getPuntosRank().compareTo(d2.getPuntosRank());
+                if (d1.getPuntosRank().compareTo(d2.getPuntosRank()) == 1) {
+                    return (-1);
+                }
+                if (d1.getPuntosRank().compareTo(d2.getPuntosRank()) == (-1)) {
+                    return 1;
+                }
+                return 0;
             }
         });
     }
