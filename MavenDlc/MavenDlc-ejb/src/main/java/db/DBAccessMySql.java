@@ -238,7 +238,7 @@ public abstract class DBAccessMySql extends AbstractDB {
         }
         st.append(" LIMIT 1");
         super.setQuery(st.toString());
-        System.out.println("********Query usado es: "+ st.toString());
+    //    System.out.println("********Query usado es: "+ st.toString());
         
         rS = super.getResultsFromQuery();
         //super.closeConnection();

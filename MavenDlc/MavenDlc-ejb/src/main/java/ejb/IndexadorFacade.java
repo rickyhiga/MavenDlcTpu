@@ -75,17 +75,19 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     public String saveCount(List<File> archivos) {
         StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
         //Por casa archivo
+        int cant = 0;
         long tiempoInicio = System.currentTimeMillis();
         vocabulario = vocRAM.getVocabulario();
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
+            cant++;
+            System.out.println("ARCHIVO " + cant + " de " + archivos.size());
             DocumentoBean docB = this.saveCountArch(archivo);
             if (docB != null) {
-                System.out.println("");
+
                 System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
                 if (docB != null) {
                     this.readFile(archivo);
-
                     this.saveVocabularioPosteo(docB);
                     st.append("-").append(archivo.getAbsolutePath()).append("\n");
                 }
@@ -93,10 +95,12 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
             } else {
                 System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
             }
+            long parcialT = System.currentTimeMillis() - tiempoInicio;
+            System.out.println("Tiempo de procesamiento: "+parcialT);
 
         }
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-        System.out.println("*********************El tiempo de indexacion de " + archivos.size() + " es :" + totalTiempo / 1000 + " seg");
+        System.out.println("*********************El tiempo de procesamiento de " + archivos.size() + "arcvhivos es :" + totalTiempo / 1000 + " seg");
 
         return st.toString();
 
@@ -151,7 +155,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
                 }
             }
-            System.out.println("Creado Hash documento: " + f.getName() + " cant palabras: " + temp.size());
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(IndexadorFacade.class.getName()).log(Level.SEVERE, null, ex);
@@ -188,7 +191,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
     }
 
     private void saveVocabularioPosteo(DocumentoBean docB) {
-        System.out.println("*************INDEXADOR");
         long tiempoInicio = System.currentTimeMillis();
 
         int repeticiones, cantPalabras = 0, cantNew = 0;
