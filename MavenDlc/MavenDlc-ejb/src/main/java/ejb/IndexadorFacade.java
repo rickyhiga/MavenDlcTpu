@@ -6,6 +6,7 @@
 package ejb;
 
 import beans.DocumentoBean;
+import beans.NotificacionBean;
 import beans.PosteoBean;
 import beans.VocabularioBean;
 import business.Documento;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,42 +75,97 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
     @Override
     public String saveCount(List<File> archivos) {
-        StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
         //Por casa archivo
+        StringBuilder st = new StringBuilder("Los siguientes archivos han sido coorrectamente procesados: \n");
         int cant = 0;
         long tiempoInicio = System.currentTimeMillis();
         vocabulario = vocRAM.getVocabulario();
+
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             cant++;
             System.out.println("ARCHIVO " + cant + " de " + archivos.size());
             DocumentoBean docB = this.saveCountArch(archivo);
             if (docB != null) {
-
                 System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
-                if (docB != null) {
-                    this.readFile(archivo);
-                    this.saveVocabularioPosteo(docB);
-                    st.append("-").append(archivo.getAbsolutePath()).append("\n");
-                }
+                this.readFile(archivo);
+                this.saveVocabularioPosteo(docB);
+                st.append("-").append(archivo.getAbsolutePath()).append("\n");
                 System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
             } else {
                 System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
             }
             long parcialT = System.currentTimeMillis() - tiempoInicio;
-            System.out.println("Tiempo de procesamiento: "+parcialT/1000+" seg");
+            System.out.println("Tiempo de procesamiento: " + parcialT / 1000 + " seg");
 
         }
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
         System.out.println("*********************El tiempo de procesamiento de " + archivos.size() + "arcvhivos es :" + totalTiempo / 1000 + " seg");
 
         return st.toString();
+//        return "hola";
 
     }
 
-    @Override
-    public void leerArchivoDefault() {
+    private List<File> obtenerArchivosCarpeta(String url) {
+        List<File> archivos = new ArrayList<>();
+        File dir = new File(url);
+        File[] directoryListing = dir.listFiles();
+        int count = 0;
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+//                count++;
+//                if(count>1){
+//                    break;
+//                }
+                archivos.add(child);
+            }
 
+            //  indE.fire(idx);
+        } else {
+
+            System.out.println("NO EXISTE LA CARPETA");
+        }
+        return archivos;
+    }
+
+    @Override
+    public List<NotificacionBean> indexarArchivosDeCarpeta() {
+        List<NotificacionBean> archivosIndexados = new ArrayList<>();
+        int cant = 0;
+        long tiempoInicio = System.currentTimeMillis();
+        vocabulario = vocRAM.getVocabulario();
+        
+        List<File> archivos = this.obtenerArchivosCarpeta("C:\\IDE\\menos");
+        for (File archivo : archivos) {
+            //Creo HashMap de las palabras del archivo guardando la frecuencia
+            cant++;
+            System.out.println("ARCHIVO " + cant + " de " + archivos.size());
+            DocumentoBean docB = this.saveCountArch(archivo);
+            if (docB != null) {
+                System.out.println("-----NUEVO DOCUMENTO " + archivo.getName() + "-----");
+                long inicioIndex = System.currentTimeMillis();
+                this.readFile(archivo);
+                int[] valores=this.saveVocabularioPosteo(docB);
+                long totalIndex = System.currentTimeMillis() - tiempoInicio;
+                NotificacionBean not = new NotificacionBean(docB, totalIndex, valores[0], valores[1], valores[2]);
+                archivosIndexados.add(not);
+                System.out.println("--------FIN DOCUMENTO " + archivo.getName() + "-------");
+            } else {
+                System.out.println("xxxxxxxxxxxx DOCUMENTO " + archivo.getName() + " YA PROCESADO");
+            }
+            long parcialT = System.currentTimeMillis() - tiempoInicio;
+            System.out.println("Tiempo de procesamiento: " + parcialT / 1000 + " seg");
+            
+        }
+        long totalTiempo = System.currentTimeMillis() - tiempoInicio;
+        System.out.println("*********************El tiempo de procesamiento de " + archivos.size() + "arcvhivos es :" + totalTiempo / 1000 + " seg");
+        return archivosIndexados;
+    }
+
+    @Override
+    public String leerArchivoDefault() {
+        return "HOLA LEI UN ARCHIVO";
     }
 
     private void readFile(File f) {
@@ -171,7 +228,6 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         String urlFile = "";
         urlFile = archivo.getAbsolutePath();
         urlFile = urlFile.replace("\\", "/");
-        System.out.println("***LOG NICO CAMBIADO URL:"+urlFile);
         docDao.openConnection();
         DocumentoBean docBean = docDao.buscarPorUrlSinAbrirCerrarConexion(urlFile);
         DocumentoEntity docE;
@@ -192,9 +248,9 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         }
     }
 
-    private void saveVocabularioPosteo(DocumentoBean docB) {
-        long tiempoInicio = System.currentTimeMillis();
+    private int[] saveVocabularioPosteo(DocumentoBean docB) {
 
+        long tiempoInicio = System.currentTimeMillis();
         int repeticiones, cantPalabras = 0, cantNew = 0;
         String termino;
         Iterator it = temp.entrySet().iterator();
@@ -251,7 +307,8 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
 
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
         System.out.println("*********************Cant Palabras: " + cantPalabras + "-Nuevas: " + cantNew + "-Updates: " + modificados.size() + "-TIEMPO: " + totalTiempo / 1000 + " seg");
-
+        int[] valores={cantPalabras, cantNew, modificados.size()};
+        return valores;
     }
 
     public class TempStore {

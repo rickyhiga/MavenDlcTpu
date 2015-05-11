@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import beans.NotificacionBean;
 import java.io.File;
 import java.util.List;
 import javax.ejb.Remote;
@@ -18,5 +19,7 @@ public interface IndexadorFacadeRemote {
 
    public String saveCount(final List<File> archivos);
    
-   public void leerArchivoDefault();
+   public String leerArchivoDefault();
+   
+   public List<NotificacionBean> indexarArchivosDeCarpeta();
 }
