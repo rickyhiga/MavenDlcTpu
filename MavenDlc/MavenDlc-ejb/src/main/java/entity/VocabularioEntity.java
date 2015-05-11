@@ -30,9 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VocabularioEntity.findAll", query = "SELECT v FROM VocabularioEntity v"),
     @NamedQuery(name = "VocabularioEntity.findById", query = "SELECT v FROM VocabularioEntity v WHERE v.id = :id"),
     @NamedQuery(name = "VocabularioEntity.findByTermino", query = "SELECT v FROM VocabularioEntity v WHERE v.termino = :termino"),
-    @NamedQuery(name = "VocabularioEntity.findByCantDoc", query = "SELECT v FROM VocabularioEntity v WHERE v.cantDoc = :cantDoc"),
-    @NamedQuery(name = "VocabularioEntity.findByMaxTf", query = "SELECT v FROM VocabularioEntity v WHERE v.maxTf = :maxTf")})
-public class VocabularioEntity implements Serializable, commons.DalEntity {
+    @NamedQuery(name = "VocabularioEntity.findByMaxTf", query = "SELECT v FROM VocabularioEntity v WHERE v.maxTf = :maxTf"),
+    @NamedQuery(name = "VocabularioEntity.findByCantDoc", query = "SELECT v FROM VocabularioEntity v WHERE v.cantDoc = :cantDoc")})
+public class VocabularioEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +47,12 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
     private String termino;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "cant_doc")
-    private int cantDoc;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "max_tf")
     private int maxTf;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "cant_doc")
+    private int cantDoc;
 
     public VocabularioEntity() {
     }
@@ -60,16 +61,17 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
         this.id = id;
     }
 
-    public VocabularioEntity(Integer id, String termino, int cantDoc, int maxTf) {
+    public VocabularioEntity(Integer id, String termino, int maxTf, int cantDoc) {
         this.id = id;
         this.termino = termino;
-        this.cantDoc = cantDoc;
         this.maxTf = maxTf;
+        this.cantDoc = cantDoc;
     }
-    public VocabularioEntity(String termino, int cantDoc, int maxTf) {
+
+    public VocabularioEntity( String termino, int maxTf, int cantDoc) {
         this.termino = termino;
-        this.cantDoc = cantDoc;
         this.maxTf = maxTf;
+        this.cantDoc = cantDoc;
     }
 
     public Integer getId() {
@@ -88,20 +90,20 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
         this.termino = termino;
     }
 
-    public int getCantDoc() {
-        return cantDoc;
-    }
-
-    public void setCantDoc(int cantDoc) {
-        this.cantDoc = cantDoc;
-    }
-
     public int getMaxTf() {
         return maxTf;
     }
 
     public void setMaxTf(int maxTf) {
         this.maxTf = maxTf;
+    }
+
+    public int getCantDoc() {
+        return cantDoc;
+    }
+
+    public void setCantDoc(int cantDoc) {
+        this.cantDoc = cantDoc;
     }
 
     @Override
@@ -128,5 +130,5 @@ public class VocabularioEntity implements Serializable, commons.DalEntity {
     public String toString() {
         return "entity.VocabularioEntity[ id=" + id + " ]";
     }
-    
+
 }

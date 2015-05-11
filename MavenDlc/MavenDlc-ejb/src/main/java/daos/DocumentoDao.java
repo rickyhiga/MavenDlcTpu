@@ -46,12 +46,12 @@ public class DocumentoDao extends DBAccessMySql {
     public DocumentoBean buscarPorUrlSinAbrirCerrarConexion(String url) {
         DocumentoBean docB = null;
         
-        int i = -1;
+       
         String nombreTabla = " documento d ";
         String[] columns = {"d.id", "d.nombre", "d.url"};
         String condicion = " d.url = '" + url +"'";
 
-        ResultSet rs = super.seleccionSimpleLimitOneSinAbrirCerrarConexion(nombreTabla, columnas, condicion);
+        ResultSet rs = super.seleccionSimpleLimitOneSinAbrirCerrarConexion(nombreTabla, columns, condicion);
 
         try {
             if (rs.next()) {
