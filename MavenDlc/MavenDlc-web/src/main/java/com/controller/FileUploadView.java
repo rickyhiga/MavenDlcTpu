@@ -68,15 +68,15 @@ public class FileUploadView {
 //            e.printStackTrace();
 //        }
 
-        File dir = new File("C:\\IDE\\Menos");
+        File dir = new File("C:\\IDE");
         File[] directoryListing = dir.listFiles();
         int count = 0;
         if (directoryListing != null) {
             for (File child : directoryListing) {
-                count++;
-                if(count>5){
-                    break;
-                }
+//                count++;
+//                if(count>5){
+//                    break;
+//                }
                 
                 lista.add(child);
             }
