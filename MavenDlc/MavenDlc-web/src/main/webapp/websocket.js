@@ -22,7 +22,9 @@ function writeToScreen(message) {
     playSound("wa");
     $('#cant_indexados').html(parseInt($('#cant_indexados').html())+1);
      var array = message.toString().split("#");
-    $( ".lv-body" ).append('<a class="lv-item" href=""><div class="media"><div class="media-body"><div class="lv-title">'+array[0]+'</div> <small class="lv-small">'+array[1]+'</small></div></div></a>');
+     if(array.length>0){
+        $( ".lv-body" ).append('<a class="lv-item" href=""><div class="media"><div class="media-body"><div class="lv-title">'+array[0]+'</div> <small class="lv-small">'+array[1]+'</small></div></div></a>');
+    }
 }
 
 function onOpen() {
