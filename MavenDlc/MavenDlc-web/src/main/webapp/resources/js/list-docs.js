@@ -3,11 +3,11 @@ $(document).ready(function(){
     oTableDoc = $('#table_documentos_res').dataTable({
         "bProcessing": true,
         "bServerSide": true,
-        "bPaginate"  : false,
+        "bPaginate"  : true,
         "bFilter": false,
         "bInfo" : false,
         "bLengthChange": false,
-        "iDisplayLength":25,
+        "iDisplayLength":10,
         "sAjaxSource": "/MavenDlc-web/faces/listResultados.xhtml",
         "fnServerData": function ( sSource, aoData, fnCallback ) {
             $.getJSON( sSource, aoData, function (json) {
@@ -16,16 +16,28 @@ $(document).ready(function(){
         } ,
         "aoColumnDefs": [
             {
+                "sName": "order",
+                "mData": "order",
+                "sTitle": "#",
+                "aTargets": [0]
+            },
+            {
                 "sName": "nombre",
                 "mData": "nombre",
                 "sTitle": "Nombre",
-                "aTargets": [0]
+                "aTargets": [1]
             },
             {
                 "sName": "url",
                 "mData": "url",
                 "sTitle": "URL",
-                "aTargets": [1]
+                "aTargets": [2]
+            },
+            {
+                "sName": "puntosRank",
+                "mData": "puntosRank",
+                "sTitle": "Valoracion",
+                "aTargets": [3]
             },
             {
                 "sName": "Actions",
@@ -33,7 +45,7 @@ $(document).ready(function(){
                 "sClass": "td-actions",
                 "mData": "id",
                 "bSortable": false,
-                "aTargets": [2],
+                "aTargets": [4],
                 "mRender": function (data, type, full) {
                     var returnButton = '<div class="btn-group">';
                     

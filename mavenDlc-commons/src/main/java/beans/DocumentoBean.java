@@ -20,6 +20,7 @@ public class DocumentoBean implements Serializable {
     private String url;
     //private float moduloDoc;
     private BigDecimal puntosRank = new BigDecimal(0);
+    private int order = 0;
 
     public DocumentoBean() {
     }
@@ -66,7 +67,15 @@ public class DocumentoBean implements Serializable {
     }
 
     public void setPuntosRank(BigDecimal puntosRank) {
-        this.puntosRank = puntosRank;
+        this.puntosRank = truncateDecimal(puntosRank, 4);
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 //    public float getModuloDoc() {
@@ -79,5 +88,13 @@ public class DocumentoBean implements Serializable {
     @Override
     public String toString() {
         return "DocumentoBean{" + "id=" + id + ", nombre=" + nombre + ", url=" + url;
+    }
+
+    private static BigDecimal truncateDecimal(BigDecimal x, int numberofDecimals) {
+        if (x.compareTo(new BigDecimal(0)) == 1) {
+            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_FLOOR);
+        } else {
+            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_CEILING);
+        }
     }
 }

@@ -65,9 +65,12 @@ public class CtrBusqueda {
                 relevante5 = lista.get(4);
             }
             System.out.println("**LOG NICO: la lista trajo:" + lista.size());
-            long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-            resumenBusqueda = lista.size() + " resultados de búsqueda en " + (float) totalTiempo / (float) 1000 + " segundos";
+        } else {
+            lista = new ArrayList<>();
         }
+
+        long totalTiempo = System.currentTimeMillis() - tiempoInicio;
+        resumenBusqueda = lista.size() + " resultados de búsqueda en " + (float) (totalTiempo / 10000) + " segundos";
 
         return "principal";
 
