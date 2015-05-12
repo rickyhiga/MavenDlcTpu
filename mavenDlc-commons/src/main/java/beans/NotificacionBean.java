@@ -71,7 +71,7 @@ public class NotificacionBean {
 
     @Override
     public String toString() {
-        return "Documento " + documento.getNombre()+"("+documento.getUrl()+ ")" + ", tiempoIndexacion=" + tiempoIndexacionMiliseg*1000 + " seg, cantPalabras=" + cantPalabras + ", cantNuevas=" + cantNuevas + ", cantModificadas=" + cantUpdates ;
+        return "Doc: " + documento.getNombre()+" # " + " T. Indexacion:" + tiempoIndexacionMiliseg/1000 + " seg - Cant. Palabras:" + cantPalabras;
     }
 
    

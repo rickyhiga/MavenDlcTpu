@@ -59,7 +59,7 @@ public class SocketMediator {
                 boolean indexo = false;
                 List<NotificacionBean> notificaciones = event.indexarArchivosDeCarpeta();
                 for (NotificacionBean not : notificaciones) {
-                    peer.getBasicRemote().sendText("Indexación finalizada: " + not);
+                    peer.getBasicRemote().sendText(""+not);
                     indexo = true;
                 }
 //                if (!indexo) {

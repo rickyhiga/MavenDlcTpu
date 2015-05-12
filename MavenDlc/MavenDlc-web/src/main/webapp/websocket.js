@@ -18,11 +18,16 @@ var output = document.getElementById("output");
 websocket.onopen = function(evt) { onOpen(evt) };
 
 function writeToScreen(message) {
-    output.innerHTML += message + "<br>";
+    //output.innerHTML += message + "<br>";
+    playSound("wa");
+    $('#cant_indexados').html(parseInt($('#cant_indexados').html())+1);
+     var array = message.toString().split("#");
+    $( ".lv-body" ).append('<a class="lv-item" href=""><div class="media"><div class="media-body"><div class="lv-title">'+array[0]+'</div> <small class="lv-small">'+array[1]+'</small></div></div></a>');
 }
 
 function onOpen() {
-    writeToScreen("Connected to " + wsUri);
+    //writeToScreen("Connected to " + wsUri);
+    console.log("Connected to " + wsUri);
 }
 // End test functions
 
@@ -37,3 +42,8 @@ function onMessage(evt) {
     console.log("received: " + evt.data);
     writeToScreen(evt.data);
 }
+
+    // @param filename The name of the file WITHOUT ending
+    function playSound(filename){   
+                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
+            }
