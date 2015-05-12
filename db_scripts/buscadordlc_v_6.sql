@@ -134,3 +134,13 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2015-05-11  1:02:23
+
+USE `buscadordlc`;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `posteo_ADEL` AFTER DELETE ON `posteo` FOR EACH ROW
+begin
+	UPDATE vocabulario v
+	SET v.cant_doc=v.cant_doc-1, 
+	v.max_tf=(SELECT MAX(p.cant_apariciones_tf) FROM posteo p WHERE p.vocabulario_id=OLD.vocabulario_id)
+	WHERE v.id=OLD.vocabulario_id;
+END
