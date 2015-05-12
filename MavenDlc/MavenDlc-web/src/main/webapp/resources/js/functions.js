@@ -135,7 +135,7 @@ $(document).ready(function(){
      */
     $('body').on('click', '[data-clear="notification"]', function(e){
       e.preventDefault();
-    
+      $('#cant_indexados').html(0);
       var x = $(this).closest('.listview');
       var y = x.find('.lv-item');
       var z = y.size();

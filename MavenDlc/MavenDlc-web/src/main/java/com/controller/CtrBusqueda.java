@@ -44,7 +44,7 @@ public class CtrBusqueda {
     }
 
     public String buscar() {
-        System.out.println("**LOG NICO: el texto: " + this.getTxtBusqueda());
+        System.out.println("**LOG: el texto: " + this.getTxtBusqueda());
         long tiempoInicio = System.currentTimeMillis();
 
         lista = buscadorBean.busqueda(this.getTxtBusqueda());
@@ -64,13 +64,13 @@ public class CtrBusqueda {
             if (lista.size() > 4) {
                 relevante5 = lista.get(4);
             }
-            System.out.println("**LOG NICO: la lista trajo:" + lista.size());
+            System.out.println("**LOG: la lista trajo:" + lista.size());
         } else {
             lista = new ArrayList<>();
         }
 
         long totalTiempo = System.currentTimeMillis() - tiempoInicio;
-        resumenBusqueda = lista.size() + " resultados de búsqueda en " + (float) (totalTiempo / 10000) + " segundos";
+        resumenBusqueda = lista.size() + " resultados de búsqueda en " + ((float) totalTiempo /(float) 1000) + " segundos";
 
         return "principal";
 

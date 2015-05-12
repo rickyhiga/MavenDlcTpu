@@ -4,7 +4,7 @@
  */
 
 
-var wsUri = "ws://" + document.location.host + document.location.pathname + "mediatorendpoint";
+var wsUri = "ws://" + document.location.host + "/MavenDlc-web/mediatorendpoint";
 var websocket = new WebSocket(wsUri);
 
 websocket.onerror = function(evt) { onError(evt) };
@@ -19,10 +19,12 @@ websocket.onopen = function(evt) { onOpen(evt) };
 
 function writeToScreen(message) {
     //output.innerHTML += message + "<br>";
-    playSound("wa");
-    $('#cant_indexados').html(parseInt($('#cant_indexados').html())+1);
+    
+   
      var array = message.toString().split("#");
      if(array.length>0){
+         playSound("wa");
+        $('#cant_indexados').html(parseInt($('#cant_indexados').html())+1);
         $( ".lv-body" ).append('<a class="lv-item" href=""><div class="media"><div class="media-body"><div class="lv-title">'+array[0]+'</div> <small class="lv-small">'+array[1]+'</small></div></div></a>');
     }
 }

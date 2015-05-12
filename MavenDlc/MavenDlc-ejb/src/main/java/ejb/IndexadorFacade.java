@@ -137,7 +137,7 @@ public class IndexadorFacade implements IndexadorFacadeRemote {
         long tiempoInicio = System.currentTimeMillis();
         vocabulario = vocRAM.getVocabulario();
         
-        List<File> archivos = this.obtenerArchivosCarpeta("C:\\IDE\\menos");
+        List<File> archivos = this.obtenerArchivosCarpeta("C:\\IDE");
         for (File archivo : archivos) {
             //Creo HashMap de las palabras del archivo guardando la frecuencia
             cant++;

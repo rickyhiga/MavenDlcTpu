@@ -55,7 +55,7 @@ public class VocabularioDao extends DBAccessMySql {
 
     public HashMap<String, VocabularioBean> listarTodosMap() {
         VocabularioBean vocB = null;
-        HashMap<String, VocabularioBean> mapa = new HashMap<>();
+        HashMap<String, VocabularioBean> mapa = new HashMap<>(34948);
         Query query = this.entityManager.createNamedQuery("VocabularioEntity.findAll");
         List<VocabularioEntity> lista = (List<VocabularioEntity>) query.getResultList();
 

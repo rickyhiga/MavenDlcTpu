@@ -51,16 +51,15 @@ public class SocketMediator {
     }
 
     public void onTimeEvent(@Observes @WBTimeEvent IndexadorFacadeRemote event) {
-
-        System.out.println("Time Event observed ");
-
+        System.out.println("On Time Event");
         for (Session peer : peers) {
+            System.out.println("(Peer)Time Event observed ");
             try {
-                boolean indexo = false;
+              
                 List<NotificacionBean> notificaciones = event.indexarArchivosDeCarpeta();
                 for (NotificacionBean not : notificaciones) {
-                    peer.getBasicRemote().sendText(""+not);
-                    indexo = true;
+                    peer.getBasicRemote().sendText("" + not);
+
                 }
 //                if (!indexo) {
 //                    peer.getBasicRemote().sendText("No se indexo");

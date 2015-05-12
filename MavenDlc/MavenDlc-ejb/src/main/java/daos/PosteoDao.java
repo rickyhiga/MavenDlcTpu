@@ -59,7 +59,7 @@ public class PosteoDao extends DBAccessMySql {
     public List<PosteoBean> obtenerPosteosPorIdVocabularioOrderByTf(int id) {
         List<PosteoBean> posteos = new ArrayList<>();
         Query query = this.entityManager.createNamedQuery("PosteoEntity.findByVocabularioIdOrderByTf").setParameter("id", id);
-        List<PosteoEntity> posE = query.setMaxResults(100).getResultList();
+        List<PosteoEntity> posE = query.setMaxResults(50).getResultList();
         for (PosteoEntity posEntity : posE) {
             PosteoBean posB = new Posteo(posEntity).getBean();
             DocumentoBean docB = docDao.buscarPorId(posEntity.getDocumentoId());
