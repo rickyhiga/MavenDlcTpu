@@ -164,6 +164,11 @@ public class BuscadorFacade implements BuscadorFacadeRemote {
         if (documentos.size() > 0) {
             docByRank = new ArrayList<>(documentos.values());
             ordenarDocs(docByRank);
+            int order = 1;
+            for (DocumentoBean db : docByRank) {
+                db.setOrder(order);
+                order++;
+            }
         }
 
         return docByRank;

@@ -31,10 +31,10 @@ public class TimerIndexacion {
     @EJB
     private IndexadorFacadeRemote idx;
 
-    @Schedule(second = "*", minute = "*/1", hour = "*", persistent = false)
+    @Schedule(second = "*", minute = "*/5", hour = "*", persistent = false)
     public void atSchedule() {
         System.out.println("Call # ");
-        
+
         timeEvent.fire(idx);
 //        ArrayList<File> lista = new ArrayList<>();
 //        File dir = new File("C:\\IDE");
