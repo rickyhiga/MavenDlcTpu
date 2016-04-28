@@ -77,10 +77,12 @@ public class CtrBusqueda {
     }
 
     public String getTxtBusqueda() {
+        System.out.println("***getbusqueda "+txtBusqueda);
         return txtBusqueda;
     }
 
     public void setTxtBusqueda(String txtBusqueda) {
+        System.out.println("***SETEEEO BUSQUEDA "+txtBusqueda);
         this.txtBusqueda = txtBusqueda;
     }
 
@@ -167,5 +169,8 @@ public class CtrBusqueda {
         this.txtBusqueda = "";
         this.resumenBusqueda = "";
     }
+     public String test(){
+         return "hola";
+     }
 
 }

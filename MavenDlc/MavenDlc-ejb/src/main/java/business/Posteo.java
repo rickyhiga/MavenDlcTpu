@@ -5,15 +5,11 @@
  */
 package business;
 
-import beans.DocumentoBean;
 import beans.PosteoBean;
-import beans.VocabularioBean;
-import daos.DocumentoDao;
-import daos.VocabularioDao;
+
 import entity.DocumentoEntity;
 import entity.PosteoEntity;
 import entity.VocabularioEntity;
-import javax.inject.Inject;
 
 /**
  *
@@ -24,10 +20,7 @@ public class Posteo {
     PosteoEntity entidad;
     DocumentoEntity docE;
     VocabularioEntity vocE;
-    @Inject
-    private VocabularioDao vocDao;
-    @Inject
-    private DocumentoDao docDao;
+    
 
     public Posteo() {
         entidad = new PosteoEntity();
